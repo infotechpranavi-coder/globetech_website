@@ -1,0 +1,217 @@
+================================================================================
+CATEGORY & SUB-CATEGORY SYSTEM - FUNCTIONING & LOGIC
+================================================================================
+
+SYSTEM OVERVIEW
+================================================================================
+- Hierarchical structure: Main Category → Sub Category → Properties
+- Main Categories: Top-level classification (e.g., "Residential", "Commercial")
+- Sub Categories: Second-level classification (e.g., "Apartments", "Villas")
+- Properties: Can belong to both main and sub categories
+
+================================================================================
+DATA STRUCTURE
+================================================================================
+
+MAIN CATEGORY:
+{
+  _id: ObjectId,
+  name: string (required),
+  image: string (optional),
+  mainUse: "property" (auto-set),
+  createdAt: Date,
+  updatedAt: Date
+}
+
+SUB CATEGORY:
+{
+  _id: ObjectId,
+  name: string (required),
+  mainCategory: string (required - must match main category name),
+  image: string (optional),
+  createdAt: Date,
+  updatedAt: Date
+}
+
+PROPERTY (with categories):
+{
+  mainCategory: string (optional),
+  subCategory: string (optional),
+  category: "MainCategory/SubCategory" (hierarchical format)
+}
+
+================================================================================
+API ENDPOINTS & LOGIC
+================================================================================
+
+1. GET /api/categories/main
+   - Fetches all main categories
+   - Filters by mainUse: "property"
+   - Returns array of main categories
+
+2. POST /api/categories/main
+   - Creates new main category
+   - Validates: name is required
+   - Auto-sets: mainUse = "property"
+   - Auto-adds: createdAt, updatedAt timestamps
+   - Returns: created category object
+
+3. DELETE /api/categories/main/[id]
+   - Deletes main category by ID
+   - Note: Does not delete associated sub-categories
+
+4. GET /api/categories/sub
+   - Fetches all sub categories
+   - Optional query: ?mainCategory=Residential (filters by main category)
+   - Returns array of sub categories
+
+5. POST /api/categories/sub
+   - Creates new sub category
+   - Validates: name and mainCategory are required
+   - Auto-adds: createdAt, updatedAt timestamps
+   - Returns: created sub category object
+
+6. PUT /api/categories/sub/[id]
+   - Updates sub category by ID
+   - Updates: name, mainCategory, image
+   - Auto-updates: updatedAt timestamp
+
+7. DELETE /api/categories/sub/[id]
+   - Deletes sub category by ID
+   - Note: Does not update properties using this sub category
+
+================================================================================
+FUNCTIONING LOGIC
+================================================================================
+
+CATEGORY CREATION FLOW:
+-----------------------
+Main Category:
+1. Admin enters name and optional image
+2. POST /api/categories/main
+3. Validate name exists
+4. Set mainUse = "property"
+5. Add timestamps
+6. Insert into main_categories collection
+7. Return success
+
+Sub Category:
+1. Admin selects main category
+2. Admin enters sub-category name and optional image
+3. POST /api/categories/sub
+4. Validate name and mainCategory exist
+5. Add timestamps
+6. Insert into sub_categories collection
+7. Return success
+
+CATEGORY FILTERING LOGIC:
+--------------------------
+- Fetch all: GET /api/categories/main or /api/categories/sub
+- Filter sub by main: GET /api/categories/sub?mainCategory=Residential
+- Filter properties: Query by mainCategory, subCategory, or category field
+
+HIERARCHICAL STRING FORMAT:
+----------------------------
+- Format: "MainCategory/SubCategory"
+- Example: "Residential/Apartments"
+- Stored in property.category field
+- Used for easy filtering and display
+
+VALIDATION RULES:
+-----------------
+Main Category:
+- Name must be unique
+- Name cannot be empty
+- Image is optional
+
+Sub Category:
+- Name must be provided
+- mainCategory must be provided
+- mainCategory should exist (validation recommended)
+- Same sub-category name can exist under different main categories
+
+================================================================================
+DATABASE COLLECTIONS
+================================================================================
+
+main_categories:
+- Stores main category data
+- Index: name (unique), mainUse
+
+sub_categories:
+- Stores sub category data
+- Index: mainCategory, name
+- Compound: { mainCategory: 1, name: 1 }
+
+================================================================================
+PROPERTY INTEGRATION
+================================================================================
+
+FILTERING PROPERTIES BY CATEGORY:
+----------------------------------
+1. By Main Category:
+   db.properties.find({ mainCategory: "Residential" })
+
+2. By Sub Category:
+   db.properties.find({ subCategory: "Apartments" })
+
+3. By Both:
+   db.properties.find({ 
+     mainCategory: "Residential",
+     subCategory: "Apartments"
+   })
+
+4. By Hierarchical String:
+   db.properties.find({ category: "Residential/Apartments" })
+
+CURRENT STATUS:
+---------------
+- Properties now use "developer" field instead of categories
+- Category system still functional but not actively used for properties
+- Can be repurposed for property types, locations, or other classifications
+
+================================================================================
+USAGE EXAMPLES
+================================================================================
+
+CREATE CATEGORY HIERARCHY:
+--------------------------
+1. Create Main Category:
+   POST /api/categories/main
+   Body: { "name": "Residential", "image": "url" }
+
+2. Create Sub Categories:
+   POST /api/categories/sub
+   Body: { "name": "Apartments", "mainCategory": "Residential" }
+
+FETCH FOR DROPDOWN:
+-------------------
+- Main Categories: GET /api/categories/main
+- Sub Categories: GET /api/categories/sub?mainCategory=Residential
+
+FILTER PROPERTIES:
+------------------
+- Filter by mainCategory and subCategory fields
+- Or use hierarchical category string
+
+================================================================================
+FILE LOCATIONS
+================================================================================
+- app/api/categories/main/route.ts
+- app/api/categories/main/[id]/route.ts
+- app/api/categories/sub/route.ts
+- app/api/categories/sub/[id]/route.ts
+
+================================================================================
+KEY POINTS
+================================================================================
+✓ Hierarchical organization: Main → Sub → Properties
+✓ RESTful API for CRUD operations
+✓ Flexible filtering capabilities
+✓ Currently replaced by Developers system for properties
+✓ Can be repurposed for other classification needs
+✓ All APIs functional and ready to use
+
+================================================================================
+
+

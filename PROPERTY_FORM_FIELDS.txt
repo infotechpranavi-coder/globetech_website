@@ -1,0 +1,325 @@
+================================================================================
+ADD NEW PROPERTY FORM - ALL INPUT FIELDS
+Dashboard Page: /dashboard (Properties Tab)
+================================================================================
+
+SECTION 1: BASIC INFORMATION
+================================================================================
+1. Property Name *
+   - Type: Text Input
+   - Required: Yes
+   - Placeholder: None
+
+2. Location *
+   - Type: Text Input
+   - Required: Yes
+   - Placeholder: None
+
+3. Developer *
+   - Type: Dropdown/Select
+   - Required: Yes
+   - Options: List of developers from database
+   - Default: "Select Developer"
+
+4. Description *
+   - Type: Textarea (4 rows)
+   - Required: Yes
+   - Placeholder: None
+
+================================================================================
+SECTION 2: PROPERTY DETAILS
+================================================================================
+5. Bedrooms
+   - Type: Number Input
+   - Required: No
+   - Min Value: 0
+   - Placeholder: None
+
+6. Bathrooms
+   - Type: Number Input
+   - Required: No
+   - Min Value: 0
+   - Placeholder: None
+
+7. Area (sqft)
+   - Type: Number Input
+   - Required: No
+   - Min Value: 0
+   - Placeholder: None
+
+================================================================================
+SECTION 3: DISPLAY OPTIONS
+================================================================================
+8. Show in Top Selling Projects
+   - Type: Checkbox
+   - Required: No
+   - Default: Unchecked
+
+9. Show in Premium Projects
+   - Type: Checkbox
+   - Required: No
+   - Default: Unchecked
+
+10. Show in Newly Launched Projects
+    - Type: Checkbox
+    - Required: No
+    - Default: Unchecked
+
+================================================================================
+SECTION 4: HIGHLIGHTS (BULLET POINTS)
+================================================================================
+11. Highlight Point Input
+    - Type: Text Input (Dynamic - Add Multiple)
+    - Required: No
+    - Placeholder: "Enter highlight point (e.g., Well-appointed 3 BHK apartments)"
+    - Action: Add button or Press Enter to add
+    - Display: List of added highlights with remove option
+
+================================================================================
+SECTION 5: OVERVIEW DETAILS
+================================================================================
+12. Number of Storeys
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., G + 39 Storeys"
+
+13. Project Area
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., 5.5 Acres"
+
+14. Possession Status
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., Ready to Move / Under Construction"
+
+15. Possession Date
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., 12-2028"
+
+16. Advertiser RERA Number
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., A52000000045"
+
+17. Project RERA Number
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., P51900046369"
+
+18. Full Address
+    - Type: Textarea (2 rows)
+    - Required: No
+    - Placeholder: "Complete property address"
+
+================================================================================
+SECTION 6: PRICING & FLOOR PLANS
+================================================================================
+19. Type (for Pricing Entry)
+    - Type: Text Input (Dynamic - Add Multiple)
+    - Required: No (but required when adding pricing entry)
+    - Placeholder: "Type (e.g., 2 BHK)"
+    - Action: Part of pricing entry form
+
+20. Carpet Area (for Pricing Entry)
+    - Type: Text Input (Dynamic - Add Multiple)
+    - Required: No (but required when adding pricing entry)
+    - Placeholder: "Carpet Area (e.g., 687 Sq.ft)"
+    - Action: Part of pricing entry form
+
+21. Price (for Pricing Entry)
+    - Type: Text Input (Dynamic - Add Multiple)
+    - Required: No (but required when adding pricing entry)
+    - Placeholder: "Price (e.g., ₹ 2.75 Cr)"
+    - Action: Part of pricing entry form, Add button to add entry
+    - Display: List of pricing entries with remove option
+
+================================================================================
+SECTION 7: AMENITIES
+================================================================================
+22. Amenity Input
+    - Type: Text Input (Dynamic - Add Multiple)
+    - Required: No
+    - Placeholder: "Enter amenity (e.g., Swimming Pool)"
+    - Action: Add button or Press Enter to add
+    - Display: List of added amenities with remove option
+
+================================================================================
+SECTION 8: FACILITIES
+================================================================================
+23. Facility Input
+    - Type: Text Input (Dynamic - Add Multiple)
+    - Required: No
+    - Placeholder: "Enter facility (e.g., Lift)"
+    - Action: Add button or Press Enter to add
+    - Display: List of added facilities with remove option
+
+================================================================================
+SECTION 9: SPECIFICATIONS
+================================================================================
+
+SUBSECTION: Floor
+-----------------
+24. Living & Dining Flooring
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., Vitrified Tiles"
+
+25. Bathroom/Utility Area
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., Anti Skid Vitrified Flooring"
+
+26. Kitchen
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., Vitrified Tiles"
+
+SUBSECTION: Fitting
+-------------------
+27. Bathroom (Fitting)
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., Premium Quality Sanitary Wares"
+
+28. Door (Fitting)
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., Flush Door"
+
+29. Windows (Fitting)
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., Aluminium Sliding Windows"
+
+SUBSECTION: Wall & Ceiling
+--------------------------
+30. Structure
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., Earthquake Resistant RCC"
+
+31. Painting
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., Oil Bound Distember"
+
+32. Walls & Ceiling
+    - Type: Text Input
+    - Required: No
+    - Placeholder: "e.g., POP/Gypsum Finish"
+
+================================================================================
+SECTION 10: CONNECTIVITY
+================================================================================
+33. Category (for Connectivity Entry)
+    - Type: Dropdown/Select (Dynamic - Add Multiple)
+    - Required: No (but required when adding connectivity entry)
+    - Options: "Commute", "Entertainment", "Essentials"
+    - Default: "Commute"
+    - Action: Part of connectivity entry form
+
+34. Name (for Connectivity Entry)
+    - Type: Text Input (Dynamic - Add Multiple)
+    - Required: No (but required when adding connectivity entry)
+    - Placeholder: "Name (e.g., Bus Station)"
+    - Action: Part of connectivity entry form
+
+35. Distance (for Connectivity Entry)
+    - Type: Text Input (Dynamic - Add Multiple)
+    - Required: No (but required when adding connectivity entry)
+    - Placeholder: "Distance (e.g., 1.7 km)"
+    - Action: Part of connectivity entry form
+
+36. Time (for Connectivity Entry)
+    - Type: Text Input (Dynamic - Add Multiple)
+    - Required: No (but required when adding connectivity entry)
+    - Placeholder: "Time (e.g., 7 mins)"
+    - Action: Part of connectivity entry form, Add button to add entry
+    - Display: List of connectivity entries grouped by category with remove option
+
+================================================================================
+SECTION 11: PROPERTY STATUS
+================================================================================
+37. Available
+    - Type: Checkbox
+    - Required: No
+    - Default: Checked
+    - Description: "Uncheck this if the property is currently not available for sale/rent"
+
+================================================================================
+SECTION 12: IMAGES
+================================================================================
+38. Upload Image File
+    - Type: File Input
+    - Required: No (but at least one image required overall)
+    - Accept: image/jpeg, image/jpg, image/png, image/webp, image/gif
+    - Max Size: 10MB
+    - Action: Uploads to Cloudinary automatically
+    - Display: Shows "Uploading image to Cloudinary..." during upload
+
+39. Image URL Input
+    - Type: Text Input (Dynamic - Add Multiple)
+    - Required: No (but at least one image required overall)
+    - Placeholder: "Or enter Image URL"
+    - Action: Add URL button or Press Enter to add
+    - Display: Grid of image thumbnails with remove option
+
+================================================================================
+SECTION 13: VIDEOS (IF EXISTS)
+================================================================================
+40. Video URL Input (if video section exists)
+    - Type: Text Input (Dynamic - Add Multiple)
+    - Required: No
+    - Placeholder: Video URL
+    - Action: Add button to add video URL
+    - Display: List of video URLs with remove option
+
+================================================================================
+SUMMARY
+================================================================================
+TOTAL INPUT FIELDS: 40+ (including dynamic array inputs)
+
+REQUIRED FIELDS (*):
+- Property Name
+- Location
+- Developer
+- Description
+- At least one Image
+
+OPTIONAL FIELDS:
+- All other fields are optional but can be filled for complete property information
+
+DYNAMIC ARRAYS (Can add multiple entries):
+- Highlights (Section 4)
+- Pricing & Floor Plans (Section 6)
+- Amenities (Section 7)
+- Facilities (Section 8)
+- Connectivity (Section 10)
+- Images (Section 12)
+- Videos (Section 13, if exists)
+
+================================================================================
+FORM ACTIONS
+================================================================================
+- Submit Button: Saves property to database
+- Cancel/Close Button: Closes modal without saving
+- Remove Buttons: Available for all dynamic array entries
+
+================================================================================
+VALIDATION RULES
+================================================================================
+1. Property Name: Required, cannot be empty
+2. Description: Required, cannot be empty
+3. Developer: Required, must select from dropdown
+4. Location: Required, cannot be empty
+5. Images: At least one image required (either uploaded file or URL)
+6. Price: Either base price or at least one pricing entry required
+7. File Upload: Max 10MB, only image formats allowed
+
+================================================================================
+END OF DOCUMENT
+================================================================================
+
+

@@ -1,0 +1,1460 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
+interface Property {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  developer: string;
+  location: string;
+  bedrooms?: number;
+  bathrooms?: number;
+  area?: number;
+  available: boolean;
+  featured?: boolean;
+  images: string[];
+  videos?: string[];
+  showInTopSelling?: boolean;
+  showInPremium?: boolean;
+  showInNewlyLaunched?: boolean;
+  showInTopPicks?: boolean;
+  type?: string;
+  // Highlights section
+  highlights?: string[];
+  // Overview section
+  storeys?: string;
+  projectArea?: string;
+  possessionStatus?: string;
+  advertiserReraNumber?: string;
+  possessionDate?: string;
+  projectReraNumber?: string;
+  address?: string;
+  // Pricing section
+  pricing?: Array<{
+    type: string;
+    carpetArea: string;
+    price: string;
+  }>;
+  // Amenities & Facilities
+  amenities?: string[];
+  facilities?: string[];
+  // Specifications
+  specifications?: {
+    floor?: { [key: string]: string };
+    fitting?: { [key: string]: string };
+    wallCeiling?: { [key: string]: string };
+  };
+  connectivity?: {
+    commute?: Array<{ name: string; distance: string; time: string }>;
+    entertainment?: Array<{ name: string; distance: string; time: string }>;
+    essentials?: Array<{ name: string; distance: string; time: string }>;
+  };
+  locationIds?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Location {
+  id: string;
+  name: string;
+  state: string;
+}
+
+interface Developer {
+  _id: string;
+  name: string;
+}
+
+export default function PlotsTab() {
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [developers, setDevelopers] = useState<Developer[]>([]);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [editingProperty, setEditingProperty] = useState<Property | null>(null);
+
+  useEffect(() => {
+    fetchProperties();
+    fetchDevelopers();
+    fetchLocations();
+  }, []);
+
+  const fetchLocations = async () => {
+    try {
+      const response = await fetch('/api/locations');
+      if (response.ok) {
+        const data = await response.json();
+        setLocations(data);
+      }
+    } catch (error) {
+      console.error('Error fetching locations:', error);
+    }
+  };
+
+  const fetchDevelopers = async () => {
+    try {
+      const response = await fetch('/api/developers');
+      if (response.ok) {
+        const data = await response.json();
+        setDevelopers(data);
+      }
+    } catch (error) {
+      console.error('Error fetching developers:', error);
+    }
+  };
+
+  const fetchProperties = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/projects', {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      });
+      if (!response.ok) throw new Error('Failed to fetch properties');
+      const data = await response.json();
+      console.log('Fetched plots:', data.length);
+      const plotsOnly = data.filter((p: Property) => p.type === 'plot');
+      setProperties(plotsOnly);
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+      setProperties([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddProperty = () => {
+    setEditingProperty(null);
+    setShowModal(true);
+  };
+
+  const handleEditProperty = (property: Property) => {
+    setEditingProperty(property);
+    setShowModal(true);
+  };
+
+  const handleDeleteProperty = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this property?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Failed to delete property');
+      await fetchProperties();
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      alert('Failed to delete property');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-gray-500">Loading properties...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Plots</h1>
+          <p className="text-gray-600 mt-2">Manage your land and plot listings</p>
+        </div>
+        <button
+          onClick={handleAddProperty}
+          className="bg-brand-secondary text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-secondary-dark transition shadow-lg"
+        >
+          + Add Plot
+        </button>
+      </div>
+
+      {/* Properties Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        {properties.length === 0 ? (
+          <div className="p-12 text-center">
+            <div className="text-6xl mb-4">🗺️</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No plots yet</h3>
+            <p className="text-gray-600 mb-6">Get started by adding your first plot listing</p>
+            <button
+              onClick={handleAddProperty}
+              className="bg-brand-secondary text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-secondary-dark transition"
+            >
+              Add Your First Plot
+            </button>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Plot
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Category
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Price
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {properties.map((property) => (
+                  <tr key={property._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        {property.images && property.images.length > 0 && (
+                          <div className="w-12 h-12 rounded-lg overflow-hidden mr-3">
+                            <img
+                              src={property.images[0]}
+                              alt={property.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">{property.name}</div>
+                          <div className="text-xs text-gray-500">ID: {property._id.slice(-8)}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 py-1 text-xs font-medium bg-brand-primary/10 text-brand-primary rounded-full">
+                        {property.developer || 'N/A'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      ₹{property.price.toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-wrap gap-1">
+                        {property.featured && (
+                          <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">
+                            NEW
+                          </span>
+                        )}
+                        {!property.available && (
+                          <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded">
+                            OUT OF STOCK
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center space-x-3">
+                        <button
+                          onClick={() => window.open(`/view-project/${property._id}`, '_blank')}
+                          className="text-brand-primary hover:text-brand-primary-dark"
+                          title="View"
+                        >
+                          👁️
+                        </button>
+                        <button
+                          onClick={() => handleEditProperty(property)}
+                          className="text-blue-600 hover:text-blue-800"
+                          title="Edit"
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProperty(property._id)}
+                          className="text-brand-secondary hover:text-red-800"
+                          title="Delete"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Property Form Modal */}
+      {showModal && (
+        <PropertyFormModal
+          property={editingProperty}
+          developers={developers}
+          allLocations={locations}
+          onClose={() => {
+            setShowModal(false);
+            setEditingProperty(null);
+          }}
+          onSuccess={() => {
+            setShowModal(false);
+            setEditingProperty(null);
+            fetchProperties();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+// Property Form Modal Component
+function PropertyFormModal({
+  property,
+  developers,
+  allLocations,
+  onClose,
+  onSuccess,
+}: {
+  property: Property | null;
+  developers: Developer[];
+  allLocations: Location[];
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const [formData, setFormData] = useState({
+    name: property?.name || '',
+    description: property?.description || '',
+    price: property?.price || 0,
+    developer: property?.developer || '',
+    location: property?.location || '',
+    locationIds: property?.locationIds || [],
+    bedrooms: property?.bedrooms || 0,
+    bathrooms: property?.bathrooms || 0,
+    area: property?.area || 0,
+    available: property?.available ?? true,
+    images: property?.images || [],
+    videos: property?.videos || [],
+    showInTopSelling: property?.showInTopSelling || false,
+    showInPremium: property?.showInPremium || false,
+    showInNewlyLaunched: property?.showInNewlyLaunched || false,
+    showInTopPicks: property?.showInTopPicks || false,
+    // Highlights
+    highlights: property?.highlights || [],
+    // Overview
+    storeys: property?.storeys || '',
+    projectArea: property?.projectArea || '',
+    possessionStatus: property?.possessionStatus || '',
+    advertiserReraNumber: property?.advertiserReraNumber || '',
+    possessionDate: property?.possessionDate || '',
+    projectReraNumber: property?.projectReraNumber || '',
+    address: property?.address || '',
+    // Pricing
+    pricing: property?.pricing || [],
+    // Amenities & Facilities
+    amenities: property?.amenities || [],
+    facilities: property?.facilities || [],
+    // Specifications
+    specifications: property?.specifications || {
+      floor: {},
+      fitting: {},
+      wallCeiling: {},
+    },
+    // Connectivity
+    connectivity: property?.connectivity || {
+      commute: [],
+      entertainment: [],
+      essentials: [],
+    },
+    type: property?.type || 'plot',
+  });
+
+  // State for managing dynamic inputs
+  const [highlightInput, setHighlightInput] = useState('');
+  const [amenityInput, setAmenityInput] = useState('');
+  const [facilityInput, setFacilityInput] = useState('');
+  const [pricingInput, setPricingInput] = useState({ type: '', carpetArea: '', price: '' });
+  const [connectivityInput, setConnectivityInput] = useState({ category: 'commute', name: '', distance: '', time: '' });
+
+  const [submitting, setSubmitting] = useState(false);
+  const [imageInput, setImageInput] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Client-side validation
+    if (!formData.name.trim()) {
+      alert('Please enter a property name');
+      return;
+    }
+    if (!formData.description.trim()) {
+      alert('Please enter a description');
+      return;
+    }
+    // Price validation - check if pricing array has entries or set default
+    if ((!formData.price || formData.price <= 0) && (!formData.pricing || formData.pricing.length === 0)) {
+      alert('Please add at least one pricing entry in the Pricing & Floor Plans section');
+      return;
+    }
+    // Set default price from first pricing entry if price is not set
+    if ((!formData.price || formData.price <= 0) && formData.pricing && formData.pricing.length > 0) {
+      // Extract numeric value from first pricing entry (remove currency symbols)
+      const firstPrice = formData.pricing[0].price.replace(/[₹,\s]/g, '');
+      const numericPrice = parseFloat(firstPrice) || 0;
+      if (numericPrice > 0) {
+        formData.price = numericPrice;
+      }
+    }
+    if (!formData.developer.trim()) {
+      alert('Please select a developer');
+      return;
+    }
+    if (!formData.location.trim()) {
+      alert('Please enter a location');
+      return;
+    }
+    if (!formData.images || formData.images.length === 0) {
+      alert('Please add at least one image');
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      const url = property
+        ? `/api/projects/${property._id}`
+        : '/api/projects';
+      const method = property ? 'PUT' : 'POST';
+
+      // Extract price from pricing array if price is not set
+      let finalPrice = formData.price;
+      if ((!finalPrice || finalPrice <= 0) && formData.pricing && formData.pricing.length > 0) {
+        // Extract numeric value from first pricing entry
+        const firstPrice = formData.pricing[0].price.replace(/[₹,\sCrLakh]/gi, '');
+        const numericPrice = parseFloat(firstPrice) || 0;
+        if (numericPrice > 0) {
+          finalPrice = numericPrice;
+        }
+      }
+
+      // Prepare data for API
+      const submitData = {
+        ...formData,
+        price: finalPrice > 0 ? parseFloat(finalPrice.toString()) : 0,
+        bedrooms: formData.bedrooms ? parseInt(formData.bedrooms.toString()) : undefined,
+        bathrooms: formData.bathrooms ? parseInt(formData.bathrooms.toString()) : undefined,
+        area: formData.area ? parseInt(formData.area.toString()) : undefined,
+      };
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submitData),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        const errorMessage = error.message || error.error || 'Failed to save property';
+        console.error('API Error:', error);
+        throw new Error(errorMessage);
+      }
+
+      alert(property ? 'Property updated successfully!' : 'Property created successfully!');
+      // Small delay to ensure database is updated
+      setTimeout(() => {
+        onSuccess();
+      }, 100);
+    } catch (error: any) {
+      console.error('Error saving property:', error);
+      alert(error.message || 'Failed to save property');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-gray-900">
+            {property ? 'Edit Plot' : 'Add New Plot'}
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 text-2xl"
+          >
+            ×
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          {/* Plot Information */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Plot Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Plot Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Location *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Developer *
+                </label>
+                <select
+                  required
+                  value={formData.developer}
+                  onChange={(e) => setFormData({ ...formData, developer: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                >
+                  <option value="">Select Developer</option>
+                  {developers.map((dev) => (
+                    <option key={dev._id} value={dev.name}>
+                      {dev.name}
+                    </option>
+                  ))}
+                </select>
+                {developers.length === 0 && (
+                  <p className="text-xs text-brand-secondary mt-1">
+                    Please add a developer first in the Developers tab
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Property Type *
+                </label>
+                <select
+                  required
+                  value={formData.type}
+                  onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                >
+                  <option value="apartment">Apartment</option>
+                  <option value="house">House</option>
+                  <option value="villa">Villa</option>
+                  <option value="plot">Plot</option>
+                  <option value="commercial">Commercial</option>
+                </select>
+              </div>
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Description *
+              </label>
+              <textarea
+                required
+                rows={4}
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+              />
+            </div>
+          </div>
+
+          {/* Property Details */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Details</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Bedrooms</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={formData.bedrooms}
+                  onChange={(e) => setFormData({ ...formData, bedrooms: parseInt(e.target.value) })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Bathrooms</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={formData.bathrooms}
+                  onChange={(e) => setFormData({ ...formData, bathrooms: parseInt(e.target.value) })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Area (sqft)</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={formData.area}
+                  onChange={(e) => setFormData({ ...formData, area: parseInt(e.target.value) })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Display Options */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Display Options</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Select where this property should be displayed on the homepage. Leave empty to only show in search/developer pages.
+            </p>
+            <div className="space-y-3">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.showInTopSelling}
+                  onChange={(e) => setFormData({ ...formData, showInTopSelling: e.target.checked })}
+                  className="w-4 h-4 text-brand-secondary border-gray-300 rounded focus:ring-brand-primary"
+                />
+                <span className="ml-2 text-sm text-gray-700 font-medium">Show in Top Selling Projects</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.showInPremium}
+                  onChange={(e) => setFormData({ ...formData, showInPremium: e.target.checked })}
+                  className="w-4 h-4 text-brand-secondary border-gray-300 rounded focus:ring-brand-primary"
+                />
+                <span className="ml-2 text-sm text-gray-700 font-medium">Show in Premium Projects</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.showInNewlyLaunched}
+                  onChange={(e) => setFormData({ ...formData, showInNewlyLaunched: e.target.checked })}
+                  className="w-4 h-4 text-brand-secondary border-gray-300 rounded focus:ring-brand-primary"
+                />
+                <span className="ml-2 text-sm text-gray-700 font-medium">Show in Newly Launched Projects</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.showInTopPicks}
+                  onChange={(e) => setFormData({ ...formData, showInTopPicks: e.target.checked })}
+                  className="w-4 h-4 text-brand-secondary border-gray-300 rounded focus:ring-brand-primary"
+                />
+                <span className="ml-2 text-sm text-gray-700 font-medium">Show in Globe-Tech Automation's Top Picks</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Project Locations */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Locations</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Select which location cards this property should appear under.
+            </p>
+            {allLocations.length === 0 ? (
+              <p className="text-sm text-brand-secondary font-medium">Please add locations first in the "Locations" tab.</p>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {allLocations.map((loc) => (
+                  <label key={loc.id} className="flex items-center p-3 border border-gray-100 rounded-lg hover:bg-gray-50 cursor-pointer transition">
+                    <input
+                      type="checkbox"
+                      checked={formData.locationIds.includes(loc.id)}
+                      onChange={(e) => {
+                        const newIds = e.target.checked
+                          ? [...formData.locationIds, loc.id]
+                          : formData.locationIds.filter(id => id !== loc.id);
+                        setFormData({ ...formData, locationIds: newIds });
+                      }}
+                      className="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"
+                    />
+                    <span className="ml-3 text-sm text-gray-700 font-medium truncate">{loc.name}</span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Highlights Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Highlights (Bullet Points)</h3>
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter highlight point (e.g., Well-appointed 3 BHK apartments)"
+                  value={highlightInput}
+                  onChange={(e) => setHighlightInput(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (highlightInput.trim()) {
+                        setFormData({
+                          ...formData,
+                          highlights: [...formData.highlights, highlightInput.trim()],
+                        });
+                        setHighlightInput('');
+                      }
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (highlightInput.trim()) {
+                      setFormData({
+                        ...formData,
+                        highlights: [...formData.highlights, highlightInput.trim()],
+                      });
+                      setHighlightInput('');
+                    }
+                  }}
+                  className="px-4 py-2 bg-brand-secondary text-white rounded-lg hover:bg-brand-secondary-dark transition"
+                >
+                  Add
+                </button>
+              </div>
+              {formData.highlights.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  {formData.highlights.map((highlight, index) => (
+                    <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                      <span className="text-sm text-gray-700">• {highlight}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            highlights: formData.highlights.filter((_, i) => i !== index),
+                          });
+                        }}
+                        className="text-brand-secondary hover:text-red-800 ml-2"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Overview Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Overview Details</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Number of Storeys</label>
+                <input
+                  type="text"
+                  placeholder="e.g., G + 39 Storeys"
+                  value={formData.storeys}
+                  onChange={(e) => setFormData({ ...formData, storeys: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Project Area</label>
+                <input
+                  type="text"
+                  placeholder="e.g., 5.5 Acres"
+                  value={formData.projectArea}
+                  onChange={(e) => setFormData({ ...formData, projectArea: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Possession Status</label>
+                <input
+                  type="text"
+                  placeholder="e.g., Ready to Move / Under Construction"
+                  value={formData.possessionStatus}
+                  onChange={(e) => setFormData({ ...formData, possessionStatus: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Possession Date</label>
+                <input
+                  type="text"
+                  placeholder="e.g., 12-2028"
+                  value={formData.possessionDate}
+                  onChange={(e) => setFormData({ ...formData, possessionDate: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Advertiser RERA Number</label>
+                <input
+                  type="text"
+                  placeholder="e.g., A52000000045"
+                  value={formData.advertiserReraNumber}
+                  onChange={(e) => setFormData({ ...formData, advertiserReraNumber: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Project RERA Number</label>
+                <input
+                  type="text"
+                  placeholder="e.g., P51900046369"
+                  value={formData.projectReraNumber}
+                  onChange={(e) => setFormData({ ...formData, projectReraNumber: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Full Address</label>
+                <textarea
+                  rows={2}
+                  placeholder="Complete property address"
+                  value={formData.address}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Pricing Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Pricing & Floor Plans</h3>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input
+                  type="text"
+                  placeholder="Type (e.g., 2 BHK)"
+                  value={pricingInput.type}
+                  onChange={(e) => setPricingInput({ ...pricingInput, type: e.target.value })}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+                <input
+                  type="text"
+                  placeholder="Carpet Area (e.g., 687 Sq.ft)"
+                  value={pricingInput.carpetArea}
+                  onChange={(e) => setPricingInput({ ...pricingInput, carpetArea: e.target.value })}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Price (e.g., ₹ 2.75 Cr)"
+                    value={pricingInput.price}
+                    onChange={(e) => setPricingInput({ ...pricingInput, price: e.target.value })}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (pricingInput.type && pricingInput.carpetArea && pricingInput.price) {
+                        setFormData({
+                          ...formData,
+                          pricing: [...formData.pricing, { ...pricingInput }],
+                        });
+                        setPricingInput({ type: '', carpetArea: '', price: '' });
+                      }
+                    }}
+                    className="px-4 py-2 bg-brand-secondary text-white rounded-lg hover:bg-brand-secondary-dark transition"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+              {formData.pricing.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  {formData.pricing.map((price, index) => (
+                    <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded">
+                      <span className="text-sm text-gray-700">
+                        {price.type} - {price.carpetArea} - {price.price}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            pricing: formData.pricing.filter((_, i) => i !== index),
+                          });
+                        }}
+                        className="text-brand-secondary hover:text-red-800 ml-2"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Amenities Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Amenities</h3>
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter amenity (e.g., Swimming Pool)"
+                  value={amenityInput}
+                  onChange={(e) => setAmenityInput(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (amenityInput.trim()) {
+                        setFormData({
+                          ...formData,
+                          amenities: [...formData.amenities, amenityInput.trim()],
+                        });
+                        setAmenityInput('');
+                      }
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (amenityInput.trim()) {
+                      setFormData({
+                        ...formData,
+                        amenities: [...formData.amenities, amenityInput.trim()],
+                      });
+                      setAmenityInput('');
+                    }
+                  }}
+                  className="px-4 py-2 bg-brand-secondary text-white rounded-lg hover:bg-brand-secondary-dark transition"
+                >
+                  Add
+                </button>
+              </div>
+              {formData.amenities.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {formData.amenities.map((amenity, index) => (
+                    <div key={index} className="flex items-center bg-gray-50 px-3 py-1 rounded">
+                      <span className="text-sm text-gray-700">{amenity}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            amenities: formData.amenities.filter((_, i) => i !== index),
+                          });
+                        }}
+                        className="text-brand-secondary hover:text-red-800 ml-2"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Facilities Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Facilities</h3>
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter facility (e.g., Lift)"
+                  value={facilityInput}
+                  onChange={(e) => setFacilityInput(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (facilityInput.trim()) {
+                        setFormData({
+                          ...formData,
+                          facilities: [...formData.facilities, facilityInput.trim()],
+                        });
+                        setFacilityInput('');
+                      }
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (facilityInput.trim()) {
+                      setFormData({
+                        ...formData,
+                        facilities: [...formData.facilities, facilityInput.trim()],
+                      });
+                      setFacilityInput('');
+                    }
+                  }}
+                  className="px-4 py-2 bg-brand-secondary text-white rounded-lg hover:bg-brand-secondary-dark transition"
+                >
+                  Add
+                </button>
+              </div>
+              {formData.facilities.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {formData.facilities.map((facility, index) => (
+                    <div key={index} className="flex items-center bg-gray-50 px-3 py-1 rounded">
+                      <span className="text-sm text-gray-700">{facility}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            facilities: formData.facilities.filter((_, i) => i !== index),
+                          });
+                        }}
+                        className="text-brand-secondary hover:text-red-800 ml-2"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Specifications Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Specifications</h3>
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Floor</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Living & Dining Flooring</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Vitrified Tiles"
+                      value={formData.specifications.floor?.['livingDining'] || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        specifications: {
+                          ...formData.specifications,
+                          floor: { ...formData.specifications.floor, livingDining: e.target.value },
+                        },
+                      })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Bathroom/Utility Area</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Anti Skid Vitrified Flooring"
+                      value={formData.specifications.floor?.['bathroomUtility'] || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        specifications: {
+                          ...formData.specifications,
+                          floor: { ...formData.specifications.floor, bathroomUtility: e.target.value },
+                        },
+                      })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Kitchen</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Vitrified Tiles"
+                      value={formData.specifications.floor?.['kitchen'] || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        specifications: {
+                          ...formData.specifications,
+                          floor: { ...formData.specifications.floor, kitchen: e.target.value },
+                        },
+                      })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Fitting</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Bathroom</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Premium Quality Sanitary Wares"
+                      value={formData.specifications.fitting?.['bathroom'] || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        specifications: {
+                          ...formData.specifications,
+                          fitting: { ...formData.specifications.fitting, bathroom: e.target.value },
+                        },
+                      })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Door</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Flush Door"
+                      value={formData.specifications.fitting?.['door'] || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        specifications: {
+                          ...formData.specifications,
+                          fitting: { ...formData.specifications.fitting, door: e.target.value },
+                        },
+                      })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Windows</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Aluminium Sliding Windows"
+                      value={formData.specifications.fitting?.['windows'] || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        specifications: {
+                          ...formData.specifications,
+                          fitting: { ...formData.specifications.fitting, windows: e.target.value },
+                        },
+                      })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Wall & Ceiling</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Structure</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Earthquake Resistant RCC"
+                      value={formData.specifications.wallCeiling?.['structure'] || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        specifications: {
+                          ...formData.specifications,
+                          wallCeiling: { ...formData.specifications.wallCeiling, structure: e.target.value },
+                        },
+                      })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Painting</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Oil Bound Distember"
+                      value={formData.specifications.wallCeiling?.['painting'] || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        specifications: {
+                          ...formData.specifications,
+                          wallCeiling: { ...formData.specifications.wallCeiling, painting: e.target.value },
+                        },
+                      })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Walls & Ceiling</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., POP/Gypsum Finish"
+                      value={formData.specifications.wallCeiling?.['wallsCeiling'] || ''}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        specifications: {
+                          ...formData.specifications,
+                          wallCeiling: { ...formData.specifications.wallCeiling, wallsCeiling: e.target.value },
+                        },
+                      })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Connectivity Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Connectivity</h3>
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <select
+                  value={connectivityInput.category}
+                  onChange={(e) => setConnectivityInput({ ...connectivityInput, category: e.target.value })}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                >
+                  <option value="commute">Commute</option>
+                  <option value="entertainment">Entertainment</option>
+                  <option value="essentials">Essentials</option>
+                </select>
+                <input
+                  type="text"
+                  placeholder="Name (e.g., Bus Station)"
+                  value={connectivityInput.name}
+                  onChange={(e) => setConnectivityInput({ ...connectivityInput, name: e.target.value })}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+                <input
+                  type="text"
+                  placeholder="Distance (e.g., 1.7 km)"
+                  value={connectivityInput.distance}
+                  onChange={(e) => setConnectivityInput({ ...connectivityInput, distance: e.target.value })}
+                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Time (e.g., 7 mins)"
+                    value={connectivityInput.time}
+                    onChange={(e) => setConnectivityInput({ ...connectivityInput, time: e.target.value })}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (connectivityInput.name && connectivityInput.distance && connectivityInput.time) {
+                        const newItem = {
+                          name: connectivityInput.name,
+                          distance: connectivityInput.distance,
+                          time: connectivityInput.time,
+                        };
+                        const categoryKey = connectivityInput.category as keyof typeof formData.connectivity;
+                        setFormData({
+                          ...formData,
+                          connectivity: {
+                            ...formData.connectivity,
+                            [categoryKey]: [
+                              ...(((formData.connectivity as any)[categoryKey] as any[]) || []),
+                              newItem,
+                            ],
+                          },
+                        });
+                        setConnectivityInput({ category: 'commute', name: '', distance: '', time: '' });
+                      }
+                    }}
+                    className="px-4 py-2 bg-brand-secondary text-white rounded-lg hover:bg-brand-secondary-dark transition"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+              {Object.entries(formData.connectivity).map(([category, items]) => (
+                items && items.length > 0 && (
+                  <div key={category} className="mt-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2 capitalize">{category}</h4>
+                    <div className="space-y-2">
+                      {items.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                          <span className="text-sm text-gray-700">
+                            {item.name}: {item.distance} | {item.time}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFormData({
+                                ...formData,
+                                connectivity: {
+                                  ...formData.connectivity,
+                                  [category]: items.filter((_, i) => i !== index),
+                                },
+                              });
+                            }}
+                            className="text-brand-secondary hover:text-red-800 ml-2"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              ))}
+            </div>
+          </div>
+
+          {/* Property Status */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Status</h3>
+            <div className="space-y-3">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.available}
+                  onChange={(e) => setFormData({ ...formData, available: e.target.checked })}
+                  className="w-4 h-4 text-brand-secondary border-gray-300 rounded focus:ring-brand-primary"
+                />
+                <span className="ml-2 text-sm text-gray-700 font-medium">Available</span>
+              </label>
+              <p className="text-xs text-gray-500 ml-6">
+                Uncheck this if the property is currently not available for sale/rent
+              </p>
+            </div>
+          </div>
+
+          {/* Images */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Images *</h3>
+            <div className="space-y-2">
+              {/* File Upload */}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Upload Image File
+                </label>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+
+                    // Validate file size (10MB max)
+                    if (file.size > 10 * 1024 * 1024) {
+                      alert('File size too large. Maximum size is 10MB.');
+                      return;
+                    }
+
+                    setUploadingImage(true);
+                    try {
+                      const uploadData = new FormData();
+                      uploadData.append('file', file);
+
+                      const response = await fetch('/api/upload/image', {
+                        method: 'POST',
+                        body: uploadData,
+                      });
+
+                      if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Failed to upload image');
+                      }
+
+                      const data = await response.json();
+                      setFormData({
+                        ...formData,
+                        images: [...formData.images, data.url],
+                      });
+                      // Reset file input
+                      e.target.value = '';
+                    } catch (error: any) {
+                      console.error('Error uploading image:', error);
+                      alert(error.message || 'Failed to upload image');
+                    } finally {
+                      setUploadingImage(false);
+                    }
+                  }}
+                  disabled={uploadingImage}
+                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                />
+                {uploadingImage && (
+                  <p className="text-xs text-brand-primary mt-1">Uploading image to Cloudinary...</p>
+                )}
+                <p className="text-xs text-gray-500 mt-1">
+                  Supported formats: JPEG, PNG, WebP, GIF (Max 10MB)
+                </p>
+              </div>
+
+              {/* URL Input */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Or enter Image URL"
+                  value={imageInput}
+                  onChange={(e) => setImageInput(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (imageInput.trim()) {
+                        setFormData({
+                          ...formData,
+                          images: [...formData.images, imageInput.trim()],
+                        });
+                        setImageInput('');
+                      }
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (imageInput.trim()) {
+                      setFormData({
+                        ...formData,
+                        images: [...formData.images, imageInput.trim()],
+                      });
+                      setImageInput('');
+                    }
+                  }}
+                  className="px-4 py-2 bg-brand-secondary text-white rounded-lg hover:bg-brand-secondary-dark transition"
+                >
+                  Add URL
+                </button>
+              </div>
+              <p className="text-xs text-gray-500">Press Enter to add image URL</p>
+              {formData.images.length > 0 && (
+                <div className="grid grid-cols-4 gap-2 mt-4">
+                  {formData.images.map((img, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={img}
+                        alt={`Property ${index + 1}`}
+                        className="w-full h-24 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData({
+                            ...formData,
+                            images: formData.images.filter((_, i) => i !== index),
+                          });
+                        }}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Form Actions */}
+          <div className="flex items-center justify-end space-x-4 pt-4 border-t border-gray-200">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="px-6 py-2 bg-brand-primary text-white rounded-lg font-semibold hover:bg-brand-primary-dark transition disabled:opacity-50"
+            >
+              {submitting ? 'Saving...' : property ? 'Update Plot' : 'Add Plot'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
