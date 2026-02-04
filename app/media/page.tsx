@@ -5,7 +5,18 @@ import Footer from "@/components/Footer";
 import MediaStories from "@/components/MediaStories";
 import VideoSection from "@/components/VideoSection";
 import FloatingActions from "@/components/FloatingActions";
+import PremiumHero from "@/components/PremiumHero";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+
+interface Blog {
+    _id: string;
+    title: string;
+    excerpt: string;
+    date: string;
+    image: string;
+    category?: string;
+}
 
 const NEWS_ARTICLES = [
     {
@@ -32,41 +43,37 @@ const NEWS_ARTICLES = [
 ];
 
 export default function MediaPage() {
+    const [blogs, setBlogs] = useState<Blog[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchBlogs = async () => {
+            try {
+                const response = await fetch('/api/blogs');
+                if (response.ok) {
+                    const data = await response.json();
+                    setBlogs(data);
+                }
+            } catch (error) {
+                console.error('Error fetching blogs:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchBlogs();
+    }, []);
+
     return (
         <main className="min-h-screen bg-white">
             <Header />
 
-            {/* Hero Section */}
-            <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
-                <div
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                    style={{
-                        backgroundImage: "url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop')",
-                    }}
-                >
-                    <div className="absolute inset-0 bg-gradient-to-r from-globe-black/80 via-globe-black/60 to-transparent"></div>
-                </div>
+            <PremiumHero
+                titlePrefix="NEWS &"
+                titleSuffix="BLOGS"
+                description="Latest updates, technical deep-dives, and industrial insights from our experts."
+                backgroundImage="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1600"
+            />
 
-                <div className="container mx-auto px-4 relative z-10">
-                    <div className="max-w-3xl">
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="w-12 h-1 bg-globe-red"></div>
-                            <span className="text-white font-black tracking-widest text-sm uppercase">Insights & Press</span>
-                        </div>
-                        <h1 className="text-5xl md:text-7xl font-black text-white mb-6 uppercase tracking-tighter leading-none">
-                            Globe-Tech in the <span className="text-globe-red">Media</span>
-                        </h1>
-                        <p className="text-gray-300 text-lg font-medium max-w-xl uppercase tracking-wide">
-                            Documenting our journey of industrial transformation and the latest breakthroughs in automation.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* Media Stories Section (Reusing existing component) */}
-            <div className="py-12 bg-gray-50">
-                <MediaStories />
-            </div>
 
             {/* News Grid */}
             <section className="py-24 bg-white">
@@ -116,6 +123,54 @@ export default function MediaPage() {
                             </div>
                         ))}
                     </div>
+                </div>
+            </section>
+
+            {/* Dynamic Blog Grid */}
+            <section className="py-24 bg-gray-50">
+                <div className="container mx-auto px-4 max-w-7xl">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+                        <div className="max-w-3xl">
+                            <div className="flex items-center gap-4 mb-4">
+                                <div className="w-1 h-8 bg-globe-black"></div>
+                                <span className="text-gray-400 font-black tracking-widest text-[10px] uppercase">Technical Insights</span>
+                            </div>
+                            <h2 className="text-4xl md:text-5xl font-black text-globe-black leading-tight uppercase tracking-tighter">
+                                Engineering &<br />Automation Feed
+                            </h2>
+                        </div>
+                    </div>
+
+                    {loading ? (
+                        <div className="flex justify-center py-20">
+                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-globe-red"></div>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {blogs.map((blog) => (
+                                <div key={blog._id} className="bg-white p-8 border border-gray-100 shadow-xl hover:shadow-2xl transition-all group">
+                                    <div className="text-[10px] font-black text-globe-red uppercase tracking-widest mb-4">
+                                        {blog.category || "Technical"} — {new Date(blog.date).toLocaleDateString()}
+                                    </div>
+                                    <h3 className="text-xl font-black text-globe-black mb-4 group-hover:text-globe-red transition-colors uppercase tracking-tight leading-tight">
+                                        {blog.title}
+                                    </h3>
+                                    <p className="text-gray-500 text-sm font-medium leading-relaxed mb-6 line-clamp-3">
+                                        {blog.excerpt}
+                                    </p>
+                                    <Link href={`/blogs/${blog._id}`} className="inline-flex items-center gap-2 text-globe-black font-black text-[10px] uppercase tracking-widest hover:text-globe-red transition-colors">
+                                        Read Technical Brief
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" /></svg>
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {blogs.length === 0 && !loading && (
+                        <div className="text-center py-20 bg-white border-2 border-dashed border-gray-200">
+                            <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">No technical articles published yet.</p>
+                        </div>
+                    )}
                 </div>
             </section>
 

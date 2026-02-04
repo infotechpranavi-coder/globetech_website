@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProjectCard from '@/components/ProjectCard';
+import PremiumHero from '@/components/PremiumHero';
 
 function PlotsContent() {
     const [allPlots, setAllPlots] = useState<any[]>([]);
@@ -65,22 +66,12 @@ function PlotsContent() {
         <main className="min-h-screen bg-gray-50">
             <Header />
 
-            {/* Hero Section */}
-            <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
-                <div
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                    style={{
-                        backgroundImage: "url('https://images.unsplash.com/photo-1516156008625-3a9d6067fab5?w=1600&h=600&fit=crop')",
-                    }}
-                >
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/60"></div>
-                </div>
-
-                <div className="relative z-10 text-center text-white px-4">
-                    <h1 className="text-5xl md:text-6xl font-black mb-4 uppercase tracking-tighter">Industrial Sites</h1>
-                    <p className="text-xl text-gray-200 font-bold uppercase tracking-widest text-sm">Strategic land and industrial units for your automation projects</p>
-                </div>
-            </section>
+            <PremiumHero
+                titlePrefix="INDUSTRIAL"
+                titleSuffix="SITES"
+                description="Strategic land and units ready for advanced industrial automation projects."
+                backgroundImage="https://images.unsplash.com/photo-1516156008625-3a9d6067fab5?q=80&w=1600"
+            />
 
             <div className="container mx-auto px-4 max-w-7xl py-12">
                 {/* Filter Bar */}

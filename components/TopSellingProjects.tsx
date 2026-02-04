@@ -34,18 +34,6 @@ const INDUSTRIAL_DATA: Property[] = [
     name: "Warehouse Industry",
     number: "04",
     image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop"
-  },
-  {
-    id: 5,
-    name: "Electronics/White Goods Industry",
-    number: "05",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop"
-  },
-  {
-    id: 6,
-    name: "Semiconductor Industry",
-    number: "06",
-    image: "https://images.unsplash.com/photo-1591815302525-756a9bcc3425?q=80&w=2070&auto=format&fit=crop"
   }
 ];
 
@@ -53,9 +41,33 @@ export default function TopSellingProjects() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(true);
+  const [industryData, setIndustryData] = useState<Property[]>(INDUSTRIAL_DATA);
+
+  useEffect(() => {
+    const fetchIndustries = async () => {
+      try {
+        const response = await fetch('/api/industries');
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.length > 0) {
+            const formattedData = data.map((item: any, index: number) => ({
+              id: item._id,
+              name: item.name,
+              number: (item.order || index + 1).toString().padStart(2, '0'),
+              image: item.image
+            }));
+            setIndustryData(formattedData);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching industries:', error);
+      }
+    };
+    fetchIndustries();
+  }, []);
 
   // Clone items for infinite loop: Original + first 4
-  const projects = [...INDUSTRIAL_DATA, ...INDUSTRIAL_DATA.slice(0, 4)];
+  const projects = [...industryData, ...industryData.slice(0, 4)];
 
   useEffect(() => {
     if (isPaused) return;
@@ -75,10 +87,10 @@ export default function TopSellingProjects() {
   const handlePrev = () => {
     if (currentIndex === 0) {
       setIsTransitioning(false);
-      setCurrentIndex(INDUSTRIAL_DATA.length);
+      setCurrentIndex(industryData.length);
       setTimeout(() => {
         setIsTransitioning(true);
-        setCurrentIndex(INDUSTRIAL_DATA.length - 1);
+        setCurrentIndex(industryData.length - 1);
       }, 50);
     } else {
       setIsTransitioning(true);
@@ -87,7 +99,7 @@ export default function TopSellingProjects() {
   };
 
   const handleTransitionEnd = () => {
-    if (currentIndex >= INDUSTRIAL_DATA.length) {
+    if (currentIndex >= industryData.length) {
       setIsTransitioning(false);
       setCurrentIndex(0);
     }
@@ -165,8 +177,8 @@ export default function TopSellingProjects() {
               <div
                 className={`absolute top-0 bottom-0 bg-globe-red rounded-full ${isTransitioning ? 'transition-all duration-700 ease-in-out' : ''}`}
                 style={{
-                  width: `${(1 / INDUSTRIAL_DATA.length) * 100}%`,
-                  left: `${((currentIndex % INDUSTRIAL_DATA.length) / INDUSTRIAL_DATA.length) * 100}%`
+                  width: `${(1 / industryData.length) * 100}%`,
+                  left: `${((currentIndex % industryData.length) / industryData.length) * 100}%`
                 }}
               />
             </div>

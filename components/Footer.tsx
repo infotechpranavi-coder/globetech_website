@@ -1,7 +1,47 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
+
+interface ExpertiseItem {
+    _id: string;
+    title?: string;
+    name?: string;
+    link?: string;
+}
 
 export default function Footer() {
+    const [expertise, setExpertise] = useState<ExpertiseItem[]>([]);
+
+    useEffect(() => {
+        const fetchExpertise = async () => {
+            try {
+                const [productsRes, industriesRes] = await Promise.all([
+                    fetch('/api/products'),
+                    fetch('/api/industries')
+                ]);
+
+                if (productsRes.ok && industriesRes.ok) {
+                    const products = await productsRes.json();
+                    const industries = await industriesRes.json();
+
+                    const filteredProducts = products
+                        .filter((p: any) => p.showInFooter)
+                        .map((p: any) => ({ _id: p._id, title: p.title, link: p.link || '/properties' }));
+
+                    const filteredIndustries = industries
+                        .filter((i: any) => i.showInFooter)
+                        .map((i: any) => ({ _id: i._id, title: i.name, link: '/dubai-projects' }));
+
+                    setExpertise([...filteredProducts, ...filteredIndustries]);
+                }
+            } catch (error) {
+                console.error('Error fetching footer expertise:', error);
+            }
+        };
+
+        fetchExpertise();
+    }, []);
+
     return (
         <footer className="bg-globe-black text-white py-20 border-t-8 border-globe-red">
             <div className="container mx-auto px-4">
@@ -12,7 +52,7 @@ export default function Footer() {
                             <div>
                                 <Image
                                     src="/WhatsApp_Image_2026-01-30_at_11.21.42_PM-removebg-preview.png"
-                                    alt="Globe-Tech Logo"
+                                    alt="Globetech Innovations"
                                     width={300}
                                     height={300}
                                     style={{ height: '110px', width: 'auto' }}
@@ -21,7 +61,7 @@ export default function Footer() {
                             </div>
                         </div>
                         <p className="text-gray-300 leading-relaxed mb-4">
-                            Your trusted partner in Industrial Automation. Experience excellence with Globe-Tech Automation.
+                            Your trusted partner in Industrial Automation. Experience excellence with Globetech Innovations.
                         </p>
                         <div className="flex space-x-4">
                             <a href="#" className="w-10 h-10 bg-white/10 rounded-sm flex items-center justify-center hover:bg-globe-red transition border border-white/10 group">
@@ -73,9 +113,9 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/blogs" className="text-gray-300 hover:text-globe-red transition flex items-center group">
+                                <Link href="/media" className="text-gray-300 hover:text-globe-red transition flex items-center group">
                                     <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
-                                    Technical Feed
+                                    News & Blogs
                                 </Link>
                             </li>
                             <li>
@@ -96,36 +136,37 @@ export default function Footer() {
                     <div className="md:col-span-2">
                         <h4 className="text-lg font-semibold mb-6 text-white">Expertise</h4>
                         <ul className="space-y-3">
-                            <li>
-                                <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
-                                    <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
-                                    Entrance Automation
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
-                                    <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
-                                    Loading Bay Solutions
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
-                                    <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
-                                    Security Systems
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
-                                    <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
-                                    System Integration
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
-                                    <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
-                                    Annual Maintenance
-                                </Link>
-                            </li>
+                            {expertise.length > 0 ? (
+                                expertise.map((item) => (
+                                    <li key={item._id}>
+                                        <Link href={item.link || '#'} className="text-gray-300 hover:text-globe-red transition flex items-center group">
+                                            <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
+                                            {item.title}
+                                        </Link>
+                                    </li>
+                                ))
+                            ) : (
+                                <>
+                                    <li>
+                                        <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
+                                            <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
+                                            Entrance Automation
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
+                                            <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
+                                            Loading Bay Solutions
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
+                                            <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
+                                            Security Systems
+                                        </Link>
+                                    </li>
+                                </>
+                            )}
                         </ul>
                     </div>
 
@@ -151,7 +192,7 @@ export default function Footer() {
                                 </div>
                                 <div>
                                     <span className="text-[10px] text-gray-500 block uppercase tracking-widest mb-1 font-black">Call Support</span>
-                                    <a href="tel:+918287116904" className="hover:text-globe-red transition-colors font-black text-sm">+91 8287116904</a>
+                                    <a href="tel:08047641503" className="hover:text-globe-red transition-colors font-black text-sm">08047641503</a>
                                 </div>
                             </li>
                             <li className="flex items-start group">
@@ -164,9 +205,9 @@ export default function Footer() {
                                 <div>
                                     <span className="text-[10px] text-gray-500 block uppercase tracking-widest mb-1 font-black">Global HQ</span>
                                     <span className="font-black text-xs block leading-snug uppercase tracking-wide">
-                                        Office No. 9&10, Ace CHS, Plot no.58,<br />
-                                        Sector -11, Kharghar, Navi Mumbai<br />
-                                        Maharashtra - 410210
+                                        GANDHI NAGAR, ROOM NO 49, NEAR MS BLDG 32, DR C G ROAD,<br />
+                                        NEAR RCF GATE NO.3, CHEMBUR COLONY, Chembur Extension,<br />
+                                        Mumbai - 400074, Maharashtra, India
                                     </span>
                                 </div>
                             </li>
@@ -175,7 +216,7 @@ export default function Footer() {
                 </div>
 
                 <div className="border-t border-gray-600 mt-12 pt-8 text-center flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-gray-300 text-sm font-bold uppercase tracking-widest">&copy; 2026 Globe-Tech Automation. All rights reserved. | <span className="text-globe-red">Engineering • Automation • Technology</span></p>
+                    <p className="text-gray-300 text-sm font-bold uppercase tracking-widest">&copy; 2026 Globetech Innovations. All rights reserved. | <span className="text-globe-red">Engineering • Automation • Technology</span></p>
                 </div>
             </div>
         </footer>

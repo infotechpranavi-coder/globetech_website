@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Upload to Cloudinary
-    const imageUrl = await uploadImage(file, 'fdmakan/properties');
+    const imageUrl = await uploadImage(file, 'globetech/images');
 
     return NextResponse.json(
       { success: true, url: imageUrl },

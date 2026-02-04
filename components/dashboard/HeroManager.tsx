@@ -102,15 +102,35 @@ export default function HeroManager() {
         }
     };
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const [uploading, setUploading] = useState(false);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setImage(reader.result as string);
-        };
-        reader.readAsDataURL(file);
+        try {
+            setUploading(true);
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('/api/upload/image', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setImage(data.url);
+            } else {
+                const error = await response.json();
+                alert(error.error || 'Failed to upload image');
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            alert('Error uploading image. Please try again.');
+        } finally {
+            setUploading(false);
+        }
     };
 
     if (loading) return <div className="p-8 text-center text-gray-500">Loading hero slides...</div>;
@@ -141,7 +161,7 @@ export default function HeroManager() {
                                     type="text"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-primary transition pr-4"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-primary transition pr-4 text-gray-900"
                                     placeholder="Find Your Sweet Home"
                                     required
                                 />
@@ -152,7 +172,7 @@ export default function HeroManager() {
                                     type="text"
                                     value={subtitle}
                                     onChange={(e) => setSubtitle(e.target.value)}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-primary transition pr-4"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-primary transition pr-4 text-gray-900"
                                     placeholder="Optional description text"
                                 />
                             </div>
@@ -165,7 +185,7 @@ export default function HeroManager() {
                                     type="file"
                                     accept="image/*"
                                     onChange={handleImageUpload}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-primary transition bg-white"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-primary transition bg-white text-gray-900"
                                 />
                                 {image && (
                                     <div className="relative mt-2 h-32 w-full rounded-lg overflow-hidden border border-gray-200">
@@ -179,7 +199,7 @@ export default function HeroManager() {
                                     type="number"
                                     value={order}
                                     onChange={(e) => setOrder(parseInt(e.target.value))}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-primary transition"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-primary transition text-gray-900"
                                 />
                             </div>
                         </div>
@@ -194,10 +214,10 @@ export default function HeroManager() {
                             </button>
                             <button
                                 type="submit"
-                                disabled={submitting}
+                                disabled={submitting || uploading}
                                 className="px-6 py-2 bg-brand-primary text-white rounded-lg font-bold hover:bg-brand-primary-dark transition disabled:opacity-50"
                             >
-                                {submitting ? 'Saving...' : 'Save Slide'}
+                                {submitting ? 'Saving...' : uploading ? 'Uploading...' : 'Save Slide'}
                             </button>
                         </div>
                     </form>

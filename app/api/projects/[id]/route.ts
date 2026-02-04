@@ -9,9 +9,16 @@ export async function GET(
 ) {
   try {
     const db = await getDatabase();
-    const property = await db.collection('properties').findOne({
-      _id: new ObjectId(params.id),
-    });
+
+    let query: any;
+    if (ObjectId.isValid(params.id)) {
+      query = { _id: new ObjectId(params.id) };
+    } else {
+      // Fallback for dummy data or custom string IDs
+      query = { _id: params.id };
+    }
+
+    const property = await db.collection('properties').findOne(query);
 
     if (!property) {
       return NextResponse.json(
@@ -120,8 +127,15 @@ export async function PUT(
     if (locationIds !== undefined) updateData.locationIds = locationIds;
     if (type !== undefined) updateData.type = type;
 
+    let query: any;
+    if (ObjectId.isValid(params.id)) {
+      query = { _id: new ObjectId(params.id) };
+    } else {
+      query = { _id: params.id };
+    }
+
     const result = await db.collection('properties').updateOne(
-      { _id: new ObjectId(params.id) },
+      query,
       { $set: updateData }
     );
 
@@ -152,9 +166,14 @@ export async function DELETE(
 ) {
   try {
     const db = await getDatabase();
-    const result = await db.collection('properties').deleteOne({
-      _id: new ObjectId(params.id),
-    });
+    let query: any;
+    if (ObjectId.isValid(params.id)) {
+      query = { _id: new ObjectId(params.id) };
+    } else {
+      query = { _id: params.id };
+    }
+
+    const result = await db.collection('properties').deleteOne(query);
 
     if (result.deletedCount === 0) {
       return NextResponse.json(

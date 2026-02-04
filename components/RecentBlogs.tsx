@@ -109,10 +109,9 @@ export default function RecentBlogs() {
               Blogs
               <span className="absolute bottom-0 left-0 w-full h-1 bg-brand-secondary"></span>
             </span>
-            <span className="text-gray-900 ml-4">Latest News & Update</span>
           </h2>
-          <p className="text-gray-500 text-lg mt-2">
-            Latest News About Real Estate
+          <p className="text-gray-500 text-lg mt-2 font-bold uppercase tracking-widest text-xs">
+            Latest Technical News & System Updates
           </p>
         </div>
 

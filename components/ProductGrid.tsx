@@ -3,7 +3,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-const PRODUCTS = [
+import { useState, useEffect } from 'react';
+
+const STATIC_PRODUCTS = [
     {
         title: "High Speed Doors",
         description: "Durable high-speed doors designed for efficiency, safety, and smooth operation in demanding industrial environments.",
@@ -27,22 +29,28 @@ const PRODUCTS = [
         description: "Efficient boom barriers for secure access control, traffic management, and seamless vehicle flow.",
         image: "https://images.unsplash.com/photo-1590674899484-d3066d482563?q=80&w=2070&auto=format&fit=crop",
         link: "#"
-    },
-    {
-        title: "Security Turnstiles",
-        description: "Reliable security turnstiles for controlled access, enhanced safety, and seamless flow in high-traffic areas.",
-        image: "https://images.unsplash.com/photo-1517420704173-9a3d7350ec4a?q=80&w=2069&auto=format&fit=crop",
-        link: "#"
-    },
-    {
-        title: "Flap Barriers",
-        description: "Flap barriers are automated access control systems with retractable flaps used to regulate and monitor pedestrian entry.",
-        image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2069&auto=format&fit=crop",
-        link: "#"
     }
 ];
 
 export default function ProductGrid() {
+    const [products, setProducts] = useState(STATIC_PRODUCTS);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('/api/products');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.length > 0) {
+                        setProducts(data);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+        fetchProducts();
+    }, []);
     return (
         <section className="py-20 bg-white">
             <div className="container mx-auto px-4 max-w-7xl">
@@ -60,16 +68,15 @@ export default function ProductGrid() {
                     </div>
 
                     <Link
-                        href="#"
+                        href="/contact"
                         className="inline-block bg-globe-red text-white font-black py-4 px-8 rounded-sm hover:bg-black hover:text-white transition-colors text-center whitespace-nowrap uppercase tracking-wider"
                     >
                         Request Quotation
                     </Link>
                 </div>
 
-                {/* Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {PRODUCTS.map((product, index) => (
+                    {products.map((product, index) => (
                         <div
                             key={index}
                             className="group flex flex-col h-full bg-globe-black overflow-hidden rounded-sm cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100"

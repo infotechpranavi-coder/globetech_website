@@ -98,9 +98,9 @@ export default function DevelopersTab() {
         </div>
         <button
           onClick={handleAddDeveloper}
-          className="bg-brand-secondary text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-secondary-dark transition shadow-lg"
+          className="bg-globe-red text-white px-6 py-3 rounded-lg font-semibold hover:bg-black transition shadow-lg"
         >
-          + Add Developer
+          + Add Partner
         </button>
       </div>
 
@@ -270,21 +270,35 @@ function DeveloperFormModal({
   const [submitting, setSubmitting] = useState(false);
   const [uploadMethod, setUploadMethod] = useState<'url' | 'file'>('url');
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      alert('File size should be less than 2MB');
-      return;
-    }
+    try {
+      setUploading(true);
+      const uploadData = new FormData();
+      uploadData.append('file', file);
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData({ ...formData, logo: reader.result as string });
-    };
-    reader.readAsDataURL(file);
+      const response = await fetch('/api/upload/image', {
+        method: 'POST',
+        body: uploadData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFormData({ ...formData, logo: data.url });
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Failed to upload image');
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Error uploading image. Please try again.');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -361,8 +375,8 @@ function DeveloperFormModal({
                   type="button"
                   onClick={() => setUploadMethod('url')}
                   className={`px-3 py-1 text-xs font-semibold rounded transition-all ${uploadMethod === 'url'
-                      ? 'bg-white text-brand-primary shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-white text-brand-primary shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
                     }`}
                 >
                   URL
@@ -371,8 +385,8 @@ function DeveloperFormModal({
                   type="button"
                   onClick={() => setUploadMethod('file')}
                   className={`px-3 py-1 text-xs font-semibold rounded transition-all ${uploadMethod === 'file'
-                      ? 'bg-white text-brand-primary shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-white text-brand-primary shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
                     }`}
                 >
                   Upload File
@@ -521,10 +535,10 @@ function DeveloperFormModal({
             </button>
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || uploading}
               className="px-6 py-2 bg-brand-primary text-white rounded-lg font-semibold hover:bg-brand-primary-light disabled:opacity-50"
             >
-              {submitting ? 'Saving...' : developer ? 'Update Developer' : 'Add Developer'}
+              {submitting ? 'Saving...' : uploading ? 'Uploading...' : developer ? 'Update Partner' : 'Add Partner'}
             </button>
           </div>
         </form>

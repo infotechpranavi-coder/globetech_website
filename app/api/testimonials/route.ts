@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         const db = await getDatabase();
         const body = await request.json();
 
-        const { name, role, quote, description, image } = body;
+        const { name, company, role, quote, description, image } = body;
 
         if (!name || !quote) {
             return NextResponse.json(
@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
 
         const testimonial = {
             name,
+            company: company || '',
             role: role || '',
             quote,
             description: description || '',

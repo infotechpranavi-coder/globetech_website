@@ -1,20 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/dashboard-layout';
 import AnalyticsTab from '@/components/dashboard/AnalyticsTab';
-import PropertiesTab from '@/components/dashboard/PropertiesTab';
 import OrdersTab from '@/components/dashboard/OrdersTab';
 import DevelopersTab from '@/components/dashboard/DevelopersTab';
 import BlogsTab from '@/components/dashboard/BlogsTab';
-import CustomersTab from '@/components/dashboard/CustomersTab';
-import LocationManager from '@/components/dashboard/LocationManager';
 import HeroManager from '@/components/dashboard/HeroManager';
 import TestimonialsTab from '@/components/dashboard/TestimonialsTab';
-import PlotsTab from '@/components/dashboard/PlotsTab';
 import DashboardLogin from '@/components/dashboard/DashboardLogin';
-import { useEffect } from 'react';
-
+import IndustriesTab from '@/components/dashboard/IndustriesTab';
+import ProductsTab from '@/components/dashboard/ProductsTab';
+import SettingsTab from '@/components/dashboard/SettingsTab';
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('analytics');
@@ -30,28 +27,25 @@ export default function DashboardPage() {
   };
 
   const renderTabContent = () => {
-    // ... switch logic remains same
     switch (activeTab) {
       case 'analytics':
         return <AnalyticsTab />;
-      case 'properties':
-        return <PropertiesTab />;
       case 'hero':
         return <HeroManager />;
-      case 'plots':
-        return <PlotsTab />;
-      case 'orders':
-        return <OrdersTab />;
-      case 'developers':
+      case 'industries':
+        return <IndustriesTab />;
+      case 'products':
+        return <ProductsTab />;
+      case 'partners':
         return <DevelopersTab />;
-      case 'locations':
-        return <LocationManager />;
-      case 'blogs':
-        return <BlogsTab />;
-      case 'customers':
-        return <CustomersTab />;
       case 'testimonials':
         return <TestimonialsTab />;
+      case 'orders':
+        return <OrdersTab />;
+      case 'blogs':
+        return <BlogsTab />;
+      case 'settings':
+        return <SettingsTab />;
       default:
         return <AnalyticsTab />;
     }

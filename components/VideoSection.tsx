@@ -1,4 +1,34 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
 export default function VideoSection() {
+    const [videoUrl, setVideoUrl] = useState('https://youtu.be/OaqYLdsZKTU');
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const response = await fetch('/api/settings');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.videoUrl) setVideoUrl(data.videoUrl);
+                }
+            } catch (error) {
+                console.error('Error fetching video settings:', error);
+            }
+        };
+        fetchSettings();
+    }, []);
+
+    // Convert YouTube URL to embed format if needed
+    const getEmbedUrl = (url: string) => {
+        if (url.includes('youtube.com/embed/')) return url;
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11)
+            ? `https://www.youtube.com/embed/${match[2]}`
+            : url;
+    };
     return (
         <section className="py-24 bg-globe-black relative overflow-hidden">
             {/* Background elements */}
@@ -20,7 +50,7 @@ export default function VideoSection() {
                 <div className="relative w-full aspect-video rounded-sm overflow-hidden shadow-[0_0_50px_rgba(238,42,36,0.15)] border-4 border-white/5 ring-1 ring-white/10 group">
                     <iframe
                         className="absolute inset-0 w-full h-full"
-                        src="https://www.youtube.com/embed/OaqYLdsZKTU"
+                        src={getEmbedUrl(videoUrl)}
                         title="Globe-Tech Automation Corporate Video"
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

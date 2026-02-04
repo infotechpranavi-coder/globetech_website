@@ -88,7 +88,11 @@ export default function FeaturedPartners() {
           _id: dev._id,
           name: dev.name,
           isDatabase: true,
-          logo: (
+          logo: dev.logo && dev.logo.startsWith('http') ? (
+            <div className="w-full h-24 flex items-center justify-center p-4">
+              <img src={dev.logo} alt={dev.name} className="max-w-full max-h-full object-contain" />
+            </div>
+          ) : (
             <div className="w-full h-24 flex items-center justify-center p-4">
               <div className="text-globe-black font-black text-2xl md:text-3xl uppercase tracking-tighter italic">
                 {dev.name}

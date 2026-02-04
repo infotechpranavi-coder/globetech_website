@@ -5,38 +5,19 @@ import Footer from "@/components/Footer";
 import PartnerSection from "@/components/PartnerSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import FloatingActions from "@/components/FloatingActions";
+import PremiumHero from "@/components/PremiumHero";
 
 export default function ClientsPage() {
     return (
         <main className="min-h-screen bg-white">
             <Header />
 
-            {/* Hero Section */}
-            <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
-                <div
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                    style={{
-                        backgroundImage: "url('https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop')",
-                    }}
-                >
-                    <div className="absolute inset-0 bg-gradient-to-r from-globe-black/80 via-globe-black/60 to-transparent"></div>
-                </div>
-
-                <div className="container mx-auto px-4 relative z-10">
-                    <div className="max-w-3xl">
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="w-12 h-1 bg-globe-red"></div>
-                            <span className="text-white font-black tracking-widest text-sm uppercase">Trust & Partnership</span>
-                        </div>
-                        <h1 className="text-5xl md:text-7xl font-black text-white mb-6 uppercase tracking-tighter leading-none">
-                            Engineering <span className="text-globe-red">Success</span> Together
-                        </h1>
-                        <p className="text-gray-300 text-lg font-medium max-w-xl uppercase tracking-wide">
-                            Empowering global industrial leaders with cutting-edge automation solutions and unmatched reliability.
-                        </p>
-                    </div>
-                </div>
-            </section>
+            <PremiumHero
+                titlePrefix="VALUED"
+                titleSuffix="CLIENTS"
+                description="Partnering with global industry leaders to deliver cutting-edge automation."
+                backgroundImage="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1600"
+            />
 
             {/* Partners Section (Reusing existing component) */}
             <PartnerSection />

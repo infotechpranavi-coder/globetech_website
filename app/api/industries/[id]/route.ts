@@ -11,7 +11,7 @@ export async function PUT(
         const body = await request.json();
         const { id } = params;
 
-        const result = await db.collection('hero_slides').updateOne(
+        const result = await db.collection('industries').updateOne(
             { _id: new ObjectId(id) },
             { $set: { ...body, updatedAt: new Date() } }
         );
@@ -30,7 +30,7 @@ export async function DELETE(
         const db = await getDatabase();
         const { id } = params;
 
-        await db.collection('hero_slides').deleteOne({ _id: new ObjectId(id) });
+        await db.collection('industries').deleteOne({ _id: new ObjectId(id) });
 
         return NextResponse.json({ success: true });
     } catch (error: any) {

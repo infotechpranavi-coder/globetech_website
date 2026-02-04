@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProjectCard from '@/components/ProjectCard';
+import PremiumHero from '@/components/PremiumHero';
 
 // Wrap the main content in Suspense for useSearchParams
 function PropertiesContent() {
@@ -15,6 +16,7 @@ function PropertiesContent() {
     const [filteredProperties, setFilteredProperties] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState(initialSearch);
+    const [activeFilter, setActiveFilter] = useState('all');
 
     useEffect(() => {
         fetchProperties();
@@ -22,9 +24,9 @@ function PropertiesContent() {
 
     useEffect(() => {
         if (properties.length > 0) {
-            filterProperties(searchQuery);
+            filterProperties(searchQuery, activeFilter);
         }
-    }, [searchQuery, properties]);
+    }, [searchQuery, properties, activeFilter]);
 
     const fetchProperties = async () => {
         try {
@@ -32,10 +34,72 @@ function PropertiesContent() {
             const response = await fetch('/api/projects');
             if (response.ok) {
                 const data = await response.json();
-                // Ensure data is mapped correctly if needed, ProjectCard expects 'property' prop
-                setProperties(data);
-                setFilteredProperties(data);
+                if (data && data.length > 0) {
+                    setProperties(data);
+                    setFilteredProperties(data);
+                    return;
+                }
             }
+
+            // Fallback for UI Preview
+            const dummyData = [
+                {
+                    _id: 'd1',
+                    name: 'Vertical High Speed Door',
+                    type: 'Industrial',
+                    subCategory: 'Industrial',
+                    price: 250000,
+                    image: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=800&auto=format&fit=crop',
+                    description: 'High-performance vertical rolling door for cleanroom and warehouse environments.'
+                },
+                {
+                    _id: 'd2',
+                    name: 'Automatic Boom Barrier',
+                    type: 'Security',
+                    subCategory: 'Security',
+                    price: 85000,
+                    image: 'https://images.unsplash.com/photo-1590674899484-d3066d482563?q=80&w=800&auto=format&fit=crop',
+                    description: 'Heavy-duty 6m boom barrier with integrated brushless DC motor for high-frequency traffic.'
+                },
+                {
+                    _id: 'd3',
+                    name: 'Industrial Sectional Door',
+                    type: 'Industrial',
+                    subCategory: 'Industrial',
+                    price: 320000,
+                    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=800&auto=format&fit=crop',
+                    description: 'Insulated sectional doors for climate-controlled docking areas and workshops.'
+                },
+                {
+                    _id: 'd4',
+                    name: 'Automatic Sliding Gate',
+                    type: 'Entrance',
+                    subCategory: 'Entrance',
+                    price: 150000,
+                    image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=800&auto=format&fit=crop',
+                    description: 'Full-height perimeter security sliding gate with infrared safety sensors.'
+                },
+                {
+                    _id: 'd5',
+                    name: 'UHF Parking System',
+                    type: 'Parking',
+                    subCategory: 'Parking',
+                    price: 120000,
+                    image: 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?q=80&w=800&auto=format&fit=crop',
+                    description: 'Long-range RFID parking system for seamless vehicle entry and exit management.'
+                },
+                {
+                    _id: 'd6',
+                    name: 'Turnstile Access Control',
+                    type: 'Security',
+                    subCategory: 'Security',
+                    price: 95000,
+                    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop',
+                    description: 'Biometric tripod turnstile for high-security office lobbies and stadiums.'
+                }
+            ];
+            setProperties(dummyData);
+            setFilteredProperties(dummyData);
         } catch (error) {
             console.error('Error fetching properties:', error);
         } finally {
@@ -43,120 +107,153 @@ function PropertiesContent() {
         }
     };
 
-    const filterProperties = (query: string) => {
-        if (!query) {
-            setFilteredProperties(properties);
-            return;
+    const filterProperties = (query: string, category: string) => {
+        let filtered = properties;
+
+        if (category !== 'all') {
+            filtered = filtered.filter(prop =>
+                prop.type?.toLowerCase().includes(category.toLowerCase()) ||
+                prop.subCategory?.toLowerCase().includes(category.toLowerCase())
+            );
         }
 
-        const lowerQuery = query.toLowerCase();
-        const filtered = properties.filter((prop) => {
-            return (
-                prop.name?.toLowerCase().includes(lowerQuery) ||
-                prop.location?.toLowerCase().includes(lowerQuery) ||
-                prop.developer?.toLowerCase().includes(lowerQuery) ||
-                prop.description?.toLowerCase().includes(lowerQuery)
-            );
-        });
+        if (query) {
+            const lowerQuery = query.toLowerCase();
+            filtered = filtered.filter((prop) => {
+                return (
+                    prop.name?.toLowerCase().includes(lowerQuery) ||
+                    prop.location?.toLowerCase().includes(lowerQuery) ||
+                    prop.description?.toLowerCase().includes(lowerQuery)
+                );
+            });
+        }
+
         setFilteredProperties(filtered);
     };
 
     return (
-        <main className="min-h-screen bg-gray-50">
+        <main className="min-h-screen bg-[#FDFDFD]">
             <Header />
 
-            {/* Hero Section with Background Image */}
-            <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
-                {/* Background Image with Overlay */}
-                <div
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                    style={{
-                        backgroundImage: "url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600&h=600&fit=crop')",
-                    }}
-                >
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/60"></div>
-                </div>
+            <PremiumHero
+                titlePrefix="ADVANCED"
+                titleSuffix="SOLUTIONS"
+                description="Precision-engineered automated systems for high-performance industrial facilities."
+                backgroundImage="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1600"
+            />
 
-                {/* Content */}
-                <div className="relative z-10 text-center text-white px-4">
-                    <h1 className="text-5xl md:text-6xl font-black mb-4 uppercase tracking-tighter">Our Projects</h1>
-                </div>
-            </section>
-
-            <div className="container mx-auto px-4 max-w-7xl py-12">
-                <div className="flex flex-col md:flex-row justify-between items-center mb-8 bg-white p-6 rounded-sm shadow-xl border border-gray-100">
-                    <div className="flex items-center gap-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
-                        <span className="text-globe-black font-black uppercase tracking-widest text-xs whitespace-nowrap">Filter by:</span>
-
-                        {/* Type Filter */}
-                        <div className="relative">
-                            <select
-                                className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 py-3 pl-6 pr-12 rounded-sm focus:outline-none focus:ring-2 focus:ring-globe-red focus:border-transparent cursor-pointer font-bold text-sm min-w-[160px] uppercase tracking-wider transition-all"
-                                onChange={(e) => filterProperties(e.target.value)}
-                            >
-                                <option value="">All Solutions</option>
-                                <option value="industrial">Industrial</option>
-                                <option value="entrance">Entrance</option>
-                                <option value="security">Security</option>
-                                <option value="parking">Parking</option>
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-globe-red">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </div>
+            <div className="container mx-auto px-4 max-w-7xl -mt-16 relative z-20 pb-24">
+                {/* Glassmorphism Filter Bar */}
+                <div className="bg-white/70 backdrop-blur-xl p-2 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40 mb-16 sticky top-24">
+                    <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
+                        {/* Quick Filter Tabs */}
+                        <div className="flex items-center gap-2 p-1 bg-gray-100/50 rounded-xl w-full lg:w-auto overflow-x-auto no-scrollbar">
+                            {['all', 'industrial', 'entrance', 'security', 'parking'].map((cat) => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setActiveFilter(cat)}
+                                    className={`px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeFilter === cat
+                                        ? 'bg-globe-red text-white shadow-lg shadow-globe-red/20'
+                                        : 'text-gray-500 hover:text-globe-black hover:bg-white'
+                                        }`}
+                                >
+                                    {cat}
+                                </button>
+                            ))}
                         </div>
 
-                        {/* Status Filter */}
-                        <div className="relative">
-                            <select className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 py-3 pl-6 pr-12 rounded-sm focus:outline-none focus:ring-2 focus:ring-globe-red focus:border-transparent cursor-pointer font-bold text-sm min-w-[160px] uppercase tracking-wider transition-all">
-                                <option>All Status</option>
-                                <option>Completed</option>
-                                <option>Ongoing</option>
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-globe-red">
+                        {/* Search Input */}
+                        <div className="relative w-full lg:max-w-md">
+                            <input
+                                type="text"
+                                placeholder="Search solutions..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-white/50 border border-gray-100 py-3 px-6 pr-12 rounded-xl focus:outline-none focus:ring-2 focus:ring-globe-red/20 focus:border-globe-red font-bold text-xs uppercase tracking-widest transition-all"
+                            />
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-globe-red">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
                         </div>
                     </div>
-
-                    <div className="mt-4 md:mt-0 text-gray-400 font-bold uppercase tracking-widest text-xs">
-                        Showing <span className="text-globe-red font-black text-lg">{filteredProperties.length}</span> Solutions
-                    </div>
                 </div>
 
+                {/* Grid Content */}
                 {loading ? (
-                    <div className="flex items-center justify-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-globe-red"></div>
+                    <div className="flex flex-col items-center justify-center h-64 gap-4">
+                        <div className="w-12 h-12 border-4 border-gray-100 border-t-globe-red rounded-full animate-spin"></div>
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Loading solutions...</span>
                     </div>
                 ) : filteredProperties.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {filteredProperties.map((property) => (
-                            <ProjectCard key={property._id} property={property} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+                        {filteredProperties.map((property, idx) => (
+                            <div key={property._id} className="animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
+                                <ProjectCard property={property} />
+                            </div>
                         ))}
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center h-96 bg-white rounded-sm shadow-xl border border-gray-100">
-                        <div className="text-6xl mb-6">⚙️</div>
+                    <div className="flex flex-col items-center justify-center py-24 bg-white rounded-3xl shadow-sm border border-gray-100">
+                        <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
+                            <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
                         <h3 className="text-2xl font-black text-globe-black mb-2 uppercase tracking-tight">No solutions found</h3>
-                        <p className="text-gray-500 font-medium">
-                            Try adjusting your filters or browse all automation projects.
+                        <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">
+                            Refine your search parameters to find matching results.
                         </p>
-                        {searchQuery && (
-                            <button
-                                onClick={() => setSearchQuery('')}
-                                className="mt-8 px-8 py-3 bg-globe-red text-white rounded-sm font-black hover:bg-black transition-all shadow-lg uppercase tracking-widest"
-                            >
-                                Clear Search
-                            </button>
-                        )}
+                    </div>
+                )}
+
+                {/* Stats Footer */}
+                {!loading && filteredProperties.length > 0 && (
+                    <div className="mt-20 pt-10 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="flex items-center gap-6">
+                            <div className="flex flex-col">
+                                <span className="text-[40px] font-black text-globe-black leading-none">{filteredProperties.length}</span>
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Live Deployments</span>
+                            </div>
+                            <div className="w-px h-12 bg-gray-100 hidden md:block"></div>
+                            <div className="flex flex-col">
+                                <span className="text-[40px] font-black text-globe-red leading-none">100%</span>
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Success Rate</span>
+                            </div>
+                        </div>
+                        <button className="px-10 py-4 bg-globe-black text-white rounded-full font-black text-xs uppercase tracking-[0.2em] hover:bg-globe-red transition-all shadow-xl shadow-black/10">
+                            Download Catalog
+                        </button>
                     </div>
                 )}
             </div>
 
             <Footer />
+
+            <style jsx global>{`
+                @keyframes fade-in-up {
+                    from {
+                        opacity: 0;
+                        transform: translateY(20px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                .animate-fade-in-up {
+                    animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                    opacity: 0;
+                }
+                .no-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+                .no-scrollbar {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+            `}</style>
         </main>
     );
 }

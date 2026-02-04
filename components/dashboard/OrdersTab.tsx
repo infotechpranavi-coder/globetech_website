@@ -4,14 +4,14 @@ import { useState, useEffect } from 'react';
 
 interface Enquiry {
   _id: string;
-  enquiryNumber: string; // Replaced orderNumber
+  enquiryNumber: string;
   customer: {
     name: string;
     email: string;
     phone?: string;
   };
-  propertyName: string; // Replaced items array
-  budget?: string;
+  propertyName: string;
+  message?: string;
   status: 'new' | 'contacted' | 'site_visit' | 'negotiation' | 'booked' | 'lost';
   createdAt: string;
 }
@@ -176,16 +176,16 @@ export default function OrdersTab() {
                     Customer Details
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">
-                    Interested Property
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest text-center">
-                    Lifecycle Status
+                    Category/Subject
                   </th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">
-                    Date Received
+                    Message/Query
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-widest">
-                    Manage
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest text-center">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest">
+                    Date
                   </th>
                 </tr>
               </thead>
@@ -198,10 +198,16 @@ export default function OrdersTab() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-bold text-brand-primary">{enquiry.customer.name}</div>
                       <div className="text-xs text-gray-400">{enquiry.customer.email}</div>
+                      <div className="text-[10px] text-gray-500 font-bold">{enquiry.customer.phone}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-700 truncate max-w-[200px]" title={enquiry.propertyName}>
+                      <div className="text-sm font-medium text-gray-700 uppercase" title={enquiry.propertyName}>
                         {enquiry.propertyName}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-xs text-gray-600 line-clamp-2 max-w-[300px]" title={enquiry.message}>
+                        {enquiry.message || 'No message provided'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
@@ -219,14 +225,6 @@ export default function OrdersTab() {
                         month: 'short',
                         year: 'numeric'
                       })}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button
-                        onClick={() => alert('Lead management details coming soon')}
-                        className="text-brand-primary hover:text-brand-secondary font-bold transition flex items-center justify-end w-full"
-                      >
-                        View Details →
-                      </button>
                     </td>
                   </tr>
                 ))}

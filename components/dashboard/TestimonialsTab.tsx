@@ -6,6 +6,7 @@ import Image from 'next/image';
 interface Testimonial {
     _id?: string;
     name: string;
+    company: string;
     role: string;
     quote: string;
     description: string;
@@ -20,12 +21,14 @@ export default function TestimonialsTab() {
     const [currentTestimonial, setCurrentTestimonial] = useState<Testimonial | null>(null);
     const [formData, setFormData] = useState<Testimonial>({
         name: '',
+        company: '',
         role: '',
         quote: '',
         description: '',
         image: '',
     });
     const [submitting, setSubmitting] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         fetchTestimonials();
@@ -53,6 +56,7 @@ export default function TestimonialsTab() {
             setCurrentTestimonial(null);
             setFormData({
                 name: '',
+                company: '',
                 role: '',
                 quote: '',
                 description: '',
@@ -120,6 +124,35 @@ export default function TestimonialsTab() {
         }
     };
 
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        try {
+            setUploading(true);
+            const uploadData = new FormData();
+            uploadData.append('file', file);
+
+            const response = await fetch('/api/upload/image', {
+                method: 'POST',
+                body: uploadData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setFormData({ ...formData, image: data.url });
+            } else {
+                const error = await response.json();
+                alert(error.error || 'Failed to upload image');
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            alert('Error uploading image. Please try again.');
+        } finally {
+            setUploading(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
@@ -158,7 +191,8 @@ export default function TestimonialsTab() {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-gray-900">{testimonial.name}</h3>
-                                    <p className="text-sm text-gray-500">{testimonial.role}</p>
+                                    <p className="text-xs font-black text-globe-red uppercase">{testimonial.company}</p>
+                                    <p className="text-[10px] text-gray-500">{testimonial.role}</p>
                                 </div>
                             </div>
                             <p className="text-brand-secondary font-medium italic mb-2">"{testimonial.quote}"</p>
@@ -221,13 +255,25 @@ export default function TestimonialsTab() {
                                         </div>
 
                                         <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
+                                            <input
+                                                type="text"
+                                                required
+                                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-brand-primary focus:border-brand-primary text-gray-900"
+                                                value={formData.company}
+                                                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                                                placeholder="e.g. SIEMENS"
+                                            />
+                                        </div>
+
+                                        <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Role / Designation</label>
                                             <input
                                                 type="text"
                                                 className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-brand-primary focus:border-brand-primary text-gray-900"
                                                 value={formData.role}
                                                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                                placeholder="e.g. Corporate Executive"
+                                                placeholder="e.g. Production Manager"
                                             />
                                         </div>
 
@@ -255,24 +301,28 @@ export default function TestimonialsTab() {
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Customer / Logo Image</label>
                                             <input
-                                                type="text"
-                                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-brand-primary focus:border-brand-primary text-gray-900"
-                                                value={formData.image}
-                                                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                                                placeholder="Paste image URL here"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-brand-primary focus:border-brand-primary text-gray-900 bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
                                             />
+                                            {formData.image && (
+                                                <div className="mt-2 relative w-16 h-16 rounded-full overflow-hidden border border-gray-200">
+                                                    <Image src={formData.image} alt="Preview" fill className="object-cover" />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                                 <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                                     <button
                                         type="submit"
-                                        disabled={submitting}
+                                        disabled={submitting || uploading}
                                         className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-primary text-base font-medium text-white hover:bg-brand-primary-dark focus:outline-none sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
                                     >
-                                        {submitting ? 'Saving...' : 'Save Testimonial'}
+                                        {submitting ? 'Saving...' : uploading ? 'Uploading...' : 'Save Testimonial'}
                                     </button>
                                     <button
                                         type="button"

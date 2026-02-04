@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PremiumHero from "@/components/PremiumHero";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -14,12 +15,27 @@ export default function ContactPage() {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    alert('Thank you for your message! We will get back to you soon.');
-    setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert('Thank you for your message! Our team will contact you shortly.');
+        setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+      } else {
+        alert('Something went wrong. Please try again later.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Failed to send message. Please check your connection.');
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -32,24 +48,12 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen">
       <Header />
-
-      {/* Hero Section with Background Image */}
-      <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1600&h=600&fit=crop')",
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/60"></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl md:text-6xl font-black mb-4 uppercase tracking-tighter">Contact Us</h1>
-        </div>
-      </section>
+      <PremiumHero
+        titlePrefix="GET IN"
+        titleSuffix="TOUCH"
+        description="Connect with our technical team for expert consultation on your automation needs."
+        backgroundImage="https://images.unsplash.com/photo-1423666639041-f56000c27a9a?q=80&w=1600"
+      />
 
       {/* Contact Section */}
       <section className="py-20 bg-white">
@@ -100,7 +104,7 @@ export default function ContactPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-globe-red"
-                    placeholder="+91 82871 16904"
+                    placeholder="08047641503"
                   />
                 </div>
                 <div>
@@ -162,9 +166,9 @@ export default function ContactPage() {
                     <div>
                       <h3 className="text-xl font-black text-globe-black mb-2 uppercase tracking-tight">Office Address</h3>
                       <p className="text-gray-500 leading-relaxed">
-                        Office No. 9&10, Ace CHS,<br />
-                        Plot no.58, Sector -11, Kharghar,<br />
-                        Navi Mumbai - 410210
+                        GANDHI NAGAR, ROOM NO 49, NEAR MS BLDG 32, DR C G ROAD,<br />
+                        NEAR RCF GATE NO.3, CHEMBUR COLONY, Chembur Extension,<br />
+                        Mumbai - 400074, Maharashtra, India
                       </p>
                     </div>
                   </div>
@@ -177,7 +181,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="text-xl font-black text-globe-black mb-2 uppercase tracking-tight">Call Now</h3>
                       <p className="text-gray-500 leading-relaxed">
-                        +91 82871 16904<br />
+                        08047641503<br />
                         Mon-Sat: 10AM - 6PM
                       </p>
                     </div>

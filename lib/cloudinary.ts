@@ -12,7 +12,7 @@ export default cloudinary;
 // Helper function to upload image to Cloudinary
 export async function uploadImage(
   file: File | Buffer | string,
-  folder: string = 'fdmakan/properties'
+  folder: string = 'globetech/images'
 ): Promise<string> {
   try {
     let uploadResult;
@@ -71,7 +71,7 @@ export async function uploadImage(
 // Helper function to upload video to Cloudinary
 export async function uploadVideo(
   file: File | Buffer | string,
-  folder: string = 'fdmakan/videos'
+  folder: string = 'globetech/videos'
 ): Promise<string> {
   try {
     let uploadResult;

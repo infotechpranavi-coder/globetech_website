@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
-const TESTIMONIALS = [
+const STATIC_TESTIMONIALS = [
     {
         company: "Aurobindo",
         quote: "We Aurobindo Pharma Ltd Unit XV would like to express to you our warmest admiration for your service to us as one of our suppliers. We appreciate your efficiency in providing us the best product and services High speed clean room roll-up doors. Globe-Tech Automation Limited deliver as per their commitment and before the committed time of delivery with excellent quality and safe products.",
@@ -18,26 +18,59 @@ const TESTIMONIALS = [
     }
 ];
 
-const LOGOS = [
-    { name: "Anmol", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/anmol-logo.png" },
-    { name: "Aurobindo", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/aurobindo-logo.png" },
-    { name: "DJK", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/djk-logo.png" },
-    { name: "Glenmark", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/glenmark-logo.png" },
-    { name: "ITC", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/itc-logo.png" },
-    { name: "Patanjali", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/patanjali-logo.png" },
-    { name: "Daichi", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/daichi-logo.png" },
-];
-
 export default function TestimonialsSection() {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [testimonials, setTestimonials] = useState(STATIC_TESTIMONIALS);
+    const [partnerLogos, setPartnerLogos] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchTestimonials = async () => {
+            try {
+                const response = await fetch('/api/testimonials');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.length > 0) {
+                        setTestimonials(data);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching testimonials:', error);
+            }
+        };
+
+        const fetchPartners = async () => {
+            try {
+                const response = await fetch('/api/developers');
+                if (response.ok) {
+                    const data = await response.json();
+                    setPartnerLogos(data);
+                }
+            } catch (error) {
+                console.error('Error fetching partner logos:', error);
+            }
+        };
+
+        fetchTestimonials();
+        fetchPartners();
+    }, []);
 
     const handleNext = () => {
-        setCurrentIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+        setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     };
 
     const handlePrev = () => {
-        setCurrentIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
+        setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
     };
+
+    const STATIC_LOGOS = [
+        { name: "Anmol", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/anmol-logo.png" },
+        { name: "Aurobindo", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/aurobindo-logo.png" },
+        { name: "DJK", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/djk-logo.png" },
+        { name: "Glenmark", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/glenmark-logo.png" },
+        { name: "ITC", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/itc-logo.png" },
+    ];
+
+    const displayLogos = partnerLogos.length > 0 ? partnerLogos : STATIC_LOGOS;
 
     return (
         <section className="py-20 bg-white">
@@ -89,15 +122,17 @@ export default function TestimonialsSection() {
                     {/* Right Side: Quote Carousel */}
                     <div className="lg:w-1/2 flex flex-col justify-center">
                         <div className="relative min-h-[300px]">
-                            <div key={currentIndex} className="animate-fade-in transition-all duration-500">
-                                <p className="text-gray-500 text-xl leading-relaxed italic mb-8">
-                                    "{TESTIMONIALS[currentIndex].quote}"
-                                </p>
-                                <div className="w-16 h-1 bg-globe-red mb-4"></div>
-                                <h3 className="text-2xl font-black text-globe-black mb-8 uppercase tracking-tight">
-                                    {TESTIMONIALS[currentIndex].company}
-                                </h3>
-                            </div>
+                            {testimonials.length > 0 && (
+                                <div key={currentIndex} className="animate-fade-in transition-all duration-500">
+                                    <p className="text-gray-500 text-xl leading-relaxed italic mb-8">
+                                        "{testimonials[currentIndex].quote}"
+                                    </p>
+                                    <div className="w-16 h-1 bg-globe-red mb-4"></div>
+                                    <h3 className="text-2xl font-black text-globe-black mb-8 uppercase tracking-tight">
+                                        {testimonials[currentIndex].company}
+                                    </h3>
+                                </div>
+                            )}
                         </div>
 
                         {/* Navigation */}
@@ -125,17 +160,20 @@ export default function TestimonialsSection() {
                 {/* Logo Cloud */}
                 <div className="border-t border-gray-100 pt-16">
                     <div className="flex flex-wrap justify-between items-center gap-8 opacity-60 hover:opacity-100 transition-opacity">
-                        {LOGOS.map((logo, index) => (
+                        {displayLogos.map((logo: any, index: number) => (
                             <div key={index} className="grayscale hover:grayscale-0 transition-all duration-300 h-12 flex items-center">
-                                <img
-                                    src={logo.src}
-                                    alt={logo.name}
-                                    className="max-h-full object-contain"
-                                    onError={(e) => {
-                                        // Fallback to text if remote image fails
-                                        (e.target as any).parentNode.innerHTML = `<span class="text-gray-400 font-bold text-xl">${logo.name}</span>`;
-                                    }}
-                                />
+                                {logo.logo || logo.src ? (
+                                    <img
+                                        src={logo.logo || logo.src}
+                                        alt={logo.name}
+                                        className="max-h-full object-contain"
+                                        onError={(e) => {
+                                            (e.target as any).parentNode.innerHTML = `<span class="text-gray-400 font-bold text-xl uppercase italic">${logo.name}</span>`;
+                                        }}
+                                    />
+                                ) : (
+                                    <span className="text-gray-400 font-bold text-xl uppercase italic">{logo.name}</span>
+                                )}
                             </div>
                         ))}
                     </div>

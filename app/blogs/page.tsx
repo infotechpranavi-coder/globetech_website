@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Image from "next/image";
 import Link from "next/link";
+import PremiumHero from "@/components/PremiumHero";
 import { useState, useEffect } from "react";
 
 interface Blog {
@@ -40,24 +41,12 @@ export default function NewsPage() {
     <main className="min-h-screen">
       <Header />
 
-      {/* Hero Section with Background Image */}
-      <section className="relative h-[400px] flex items-center justify-center overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1600&h=600&fit=crop')",
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/50 to-black/60"></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 text-center text-white px-4">
-          <h1 className="text-5xl md:text-6xl font-black mb-4 uppercase tracking-tighter">Globe-Tech Insights</h1>
-          <p className="text-xl text-gray-200 font-bold uppercase tracking-widest text-sm">Industrial Automation trends, technical guides, and company news</p>
-        </div>
-      </section>
+      <PremiumHero
+        titlePrefix="TECHNICAL"
+        titleSuffix="FEED"
+        description="Deep dives into the mechanics of high-performance automation and robotics."
+        backgroundImage="https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1600"
+      />
 
 
       {/* News Articles */}

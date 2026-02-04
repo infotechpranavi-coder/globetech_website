@@ -12,15 +12,14 @@ interface DashboardLayoutProps {
 
 const tabs = [
   { id: 'analytics', label: 'Analytics', icon: '📊' },
-  { id: 'properties', label: 'Properties', icon: '🏠' },
-  { id: 'plots', label: 'Plots', icon: '🗺️' },
-  { id: 'hero', label: 'Hero Section', icon: '🎞️' },
-  { id: 'orders', label: 'Enquiries', icon: '📋' },
-  { id: 'developers', label: 'Developers', icon: '🏢' },
-  { id: 'locations', label: 'Locations', icon: '🌍' },
-  { id: 'blogs', label: 'Blogs', icon: '📝' },
+  { id: 'hero', label: 'Hero Slides', icon: '🎞️' },
+  { id: 'industries', label: 'Industries', icon: '🏭' },
+  { id: 'products', label: 'Products', icon: '⚙️' },
+  { id: 'partners', label: 'Partners', icon: '🏢' },
   { id: 'testimonials', label: 'Testimonials', icon: '💬' },
-  { id: 'customers', label: 'Customers', icon: '👥' },
+  { id: 'orders', label: 'Enquiries', icon: '📋' },
+  { id: 'blogs', label: 'Blogs', icon: '📝' },
+  { id: 'settings', label: 'Site Settings', icon: '🛠️' },
 ];
 
 
@@ -32,15 +31,16 @@ export default function DashboardLayout({ children, activeTab, onTabChange }: Da
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo and Firm Name */}
-            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition">
-              <Image
-                src="/WhatsApp_Image_2026-01-30_at_11.21.42_PM-removebg-preview.png"
-                alt="Globe-Tech Logo"
-                width={250}
-                height={250}
-                className="h-16 w-auto object-contain"
-                priority
-              />
+            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition py-4">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-globe-red rounded-full flex items-center justify-center text-white font-black text-xl italic">
+                  G
+                </div>
+                <div className="flex flex-col leading-none">
+                  <span className="text-xl font-black text-globe-black tracking-tighter uppercase italic">GLOBETECH</span>
+                  <span className="text-[8px] font-black text-globe-red uppercase tracking-[0.2em]">Innovations</span>
+                </div>
+              </div>
             </Link>
 
             {/* Admin Profile */}
