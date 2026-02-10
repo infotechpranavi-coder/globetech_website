@@ -64,9 +64,7 @@ export default function OrdersTab() {
 
   const stats = {
     total: enquiries.length,
-    new: enquiries.filter((e) => e.status === 'new' || (e as any).status === 'pending').length,
-    siteVisit: enquiries.filter((e) => e.status === 'site_visit' || (e as any).status === 'processing').length,
-    booked: enquiries.filter((e) => e.status === 'booked' || (e as any).status === 'delivered').length,
+    responded: enquiries.filter((e) => e.status !== 'new' && (e as any).status !== 'pending').length,
   };
 
   const getStatusBadge = (status: string) => {
@@ -102,22 +100,14 @@ export default function OrdersTab() {
       </div>
 
       {/* Lead Management Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Total Leads</div>
           <div className="text-3xl font-extrabold text-brand-primary mt-2">{stats.total}</div>
         </div>
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-blue-500">
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">New Leads</div>
-          <div className="text-3xl font-extrabold text-blue-600 mt-2">{stats.new}</div>
-        </div>
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-purple-500">
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Site Visits</div>
-          <div className="text-3xl font-extrabold text-purple-600 mt-2">{stats.siteVisit}</div>
-        </div>
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-brand-secondary">
-          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Bookings</div>
-          <div className="text-3xl font-extrabold text-brand-secondary mt-2">{stats.booked}</div>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 border-l-4 border-l-green-500">
+          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Responded</div>
+          <div className="text-3xl font-extrabold text-green-600 mt-2">{stats.responded}</div>
         </div>
       </div>
 
@@ -211,13 +201,37 @@ export default function OrdersTab() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <span
-                        className={`px-3 py-1 text-[10px] font-extrabold rounded-full tracking-wider uppercase ${getStatusBadge(
-                          enquiry.status
-                        )}`}
+                      <select
+                        value={enquiry.status}
+                        onChange={async (e) => {
+                          const newStatus = e.target.value;
+                          try {
+                            const response = await fetch('/api/orders', {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ id: enquiry._id, status: newStatus }),
+                            });
+
+                            if (response.ok) {
+                              // Refresh the enquiries list
+                              fetchEnquiries();
+                            } else {
+                              alert('Failed to update status');
+                            }
+                          } catch (error) {
+                            console.error('Error updating status:', error);
+                            alert('Failed to update status');
+                          }
+                        }}
+                        className={`px-3 py-1 text-[10px] font-extrabold rounded-full tracking-wider uppercase cursor-pointer border-2 transition-all ${getStatusBadge(enquiry.status)}`}
                       >
-                        {enquiry.status.replace('_', ' ')}
-                      </span>
+                        <option value="new">New</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="site_visit">Site Visit</option>
+                        <option value="negotiation">Negotiation</option>
+                        <option value="booked">Booked</option>
+                        <option value="lost">Lost</option>
+                      </select>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(enquiry.createdAt).toLocaleDateString('en-IN', {

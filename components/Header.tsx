@@ -95,7 +95,7 @@ export default function Header() {
           {/* Logo & Branding */}
           <Link href="/" className="flex items-center gap-4 group">
             {/* Circular Logo */}
-            <div className="relative h-12 w-12 sm:h-16 sm:w-16 flex-shrink-0">
+            <div className="relative h-20 w-20 sm:h-24 sm:w-24 flex-shrink-0 -mt-4 sm:-mt-8">
               <Image
                 src="/WhatsApp_Image_2026-01-30_at_11.21.42_PM-removebg-preview.png"
                 alt="Globetech Innovations"
@@ -108,7 +108,7 @@ export default function Header() {
             {/* Branding Text & Details */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 md:gap-4">
               <div className="flex flex-col lg:flex-row lg:items-baseline lg:gap-3">
-                <h1 className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-black text-[#2D2D2D] leading-none tracking-tighter">
+                <h1 className="text-xl sm:text-2xl md:text-2xl lg:text-3xl font-medium text-[#2D2D2D] leading-none tracking-tighter">
                   Globetech Innovations
                 </h1>
                 <div className="flex items-center gap-2">

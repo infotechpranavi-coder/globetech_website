@@ -6,6 +6,7 @@ import TeamSection from "@/components/TeamSection";
 import MediaStories from "@/components/MediaStories";
 import FloatingActions from "@/components/FloatingActions";
 import PremiumHero from "@/components/PremiumHero";
+import AboutSection from "@/components/AboutSection";
 import Link from "next/link";
 
 export default function AboutPage() {
@@ -19,6 +20,8 @@ export default function AboutPage() {
         description="Leading the industrial revolution with precision engineering and automated brilliance."
         backgroundImage="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1600"
       />
+
+      <AboutSection />
 
       {/* About Content */}
       <section className="py-20 bg-white">

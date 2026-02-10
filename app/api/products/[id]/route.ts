@@ -2,6 +2,26 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDatabase } from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 
+export async function GET(
+    request: NextRequest,
+    { params }: { params: { id: string } }
+) {
+    try {
+        const db = await getDatabase();
+        const { id } = params;
+
+        const product = await db.collection('products').findOne({ _id: new ObjectId(id) });
+
+        if (!product) {
+            return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+        }
+
+        return NextResponse.json(product);
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
+
 export async function PUT(
     request: NextRequest,
     { params }: { params: { id: string } }

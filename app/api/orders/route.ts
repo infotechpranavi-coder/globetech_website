@@ -59,3 +59,43 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// PATCH - Update enquiry status
+export async function PATCH(request: NextRequest) {
+  try {
+    const db = await getDatabase();
+    const body = await request.json();
+    const { id, status } = body;
+
+    if (!id || !status) {
+      return NextResponse.json(
+        { error: 'Missing id or status' },
+        { status: 400 }
+      );
+    }
+
+    const { ObjectId } = await import('mongodb');
+    const result = await db.collection('orders').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { status, updatedAt: new Date().toISOString() } }
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        { error: 'Enquiry not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(
+      { success: true, message: 'Status updated successfully' },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error('Error updating enquiry status:', error);
+    return NextResponse.json(
+      { error: 'Failed to update status', message: error.message },
+      { status: 500 }
+    );
+  }
+}

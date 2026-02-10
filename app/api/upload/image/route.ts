@@ -14,10 +14,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'application/pdf', 'video/mp4', 'video/webm'];
     if (!validTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: 'Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed.' },
+        { error: 'Invalid file type. Allowed: Images, PDF, MP4, WebM.' },
         { status: 400 }
       );
     }
@@ -32,10 +32,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Upload to Cloudinary
-    const imageUrl = await uploadImage(file, 'globetech/images');
+    let fileUrl;
+    if (file.type === 'application/pdf') {
+      const { uploadFile } = await import('@/lib/cloudinary');
+      fileUrl = await uploadFile(file, 'globetech/docs');
+    } else if (file.type.startsWith('video/')) {
+      const { uploadVideo } = await import('@/lib/cloudinary');
+      fileUrl = await uploadVideo(file, 'globetech/videos');
+    } else {
+      fileUrl = await uploadImage(file, 'globetech/images');
+    }
 
     return NextResponse.json(
-      { success: true, url: imageUrl },
+      { success: true, url: fileUrl },
       { status: 200 }
     );
   } catch (error: any) {

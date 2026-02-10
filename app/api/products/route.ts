@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         const db = await getDatabase();
         const body = await request.json();
 
-        const { title, description, image, link, showInFooter } = body;
+        const { title, description, image, link, price, specifications, gallery, brochure, showInFooter } = body;
 
         if (!title || !description || !image) {
             return NextResponse.json(
@@ -38,6 +38,10 @@ export async function POST(request: NextRequest) {
             description,
             image,
             link: link || '#',
+            price: price || '',
+            specifications: specifications || [],
+            gallery: gallery || [],
+            brochure: brochure || '',
             showInFooter: !!showInFooter,
             createdAt: new Date(),
             updatedAt: new Date(),

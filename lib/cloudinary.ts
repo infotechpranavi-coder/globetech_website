@@ -131,3 +131,50 @@ export async function deleteFromCloudinary(publicId: string): Promise<void> {
   }
 }
 
+// Helper function to upload generic files (PDFs, etc.) without image transformations
+export async function uploadFile(
+  file: File | Buffer | string,
+  folder: string = 'globetech/docs'
+): Promise<string> {
+  try {
+    let uploadResult;
+
+    const options: any = {
+      resource_type: 'raw', // Force raw for PDFs and other docs to avoid image processing issues
+      folder,
+      use_filename: true,
+      unique_filename: true,
+    };
+
+    if (typeof file === 'string') {
+      uploadResult = await cloudinary.uploader.upload(file, options);
+    } else if (Buffer.isBuffer(file)) {
+      uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          options,
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        ).end(file);
+      });
+    } else {
+      const arrayBuffer = await (file as any).arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      uploadResult = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          options,
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        ).end(buffer);
+      });
+    }
+
+    return (uploadResult as any).secure_url;
+  } catch (error) {
+    console.error('Error uploading file to Cloudinary:', error);
+    throw error;
+  }
+}

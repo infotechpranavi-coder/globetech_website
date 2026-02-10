@@ -27,6 +27,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'imgs.search.brave.com',
       },
+      {
+        protocol: 'https',
+        hostname: '5.imimg.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '4.imimg.com',
+      },
     ],
 
   },

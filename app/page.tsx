@@ -3,8 +3,6 @@
 import { useEffect } from 'react';
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import AboutSection from "@/components/AboutSection";
-import MediaStories from "@/components/MediaStories";
 import VideoSection from "@/components/VideoSection";
 import TopSellingProjects from "@/components/TopSellingProjects";
 import PartnerSection from "@/components/PartnerSection";
@@ -32,9 +30,7 @@ export default function Home() {
         <Hero />
       </div>
 
-      <AboutSection />
-
-      <MediaStories />
+      <ProductGrid />
 
       <VideoSection />
 
@@ -46,7 +42,6 @@ export default function Home() {
 
       <GlobeTechDifference />
 
-      <ProductGrid />
 
       <TeamSection />
 

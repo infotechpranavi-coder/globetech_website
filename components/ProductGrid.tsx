@@ -2,29 +2,34 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { useState, useEffect } from 'react';
 
 const STATIC_PRODUCTS = [
     {
+        _id: "demo-1",
         title: "High Speed Doors",
         description: "Durable high-speed doors designed for efficiency, safety, and smooth operation in demanding industrial environments.",
         image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=2070&auto=format&fit=crop",
         link: "#"
     },
     {
+        _id: "demo-2",
         title: "Platform Screen Doors",
         description: "Reliable platform screen doors enhancing passenger safety, station efficiency, and automated train operations worldwide.",
         image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop",
         link: "#"
     },
     {
+        _id: "demo-3",
         title: "Rolling Shutters",
         description: "Rolling shutters offering reliable protection, privacy control, and smooth operation for industrial and commercial spaces.",
         image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop",
         link: "#"
     },
     {
+        _id: "demo-4",
         title: "Boom Barriers",
         description: "Efficient boom barriers for secure access control, traffic management, and seamless vehicle flow.",
         image: "https://images.unsplash.com/photo-1590674899484-d3066d482563?q=80&w=2070&auto=format&fit=crop",
@@ -33,6 +38,7 @@ const STATIC_PRODUCTS = [
 ];
 
 export default function ProductGrid() {
+    const router = useRouter();
     const [products, setProducts] = useState(STATIC_PRODUCTS);
 
     useEffect(() => {
@@ -76,9 +82,16 @@ export default function ProductGrid() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {products.map((product, index) => (
+                    {products.map((product: any, index) => (
                         <div
                             key={index}
+                            onClick={() => {
+                                if (product._id) {
+                                    router.push(`/view-product/${product._id}`);
+                                } else if (product.link && product.link !== '#') {
+                                    router.push(product.link);
+                                }
+                            }}
                             className="group flex flex-col h-full bg-globe-black overflow-hidden rounded-sm cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100"
                         >
                             {/* Image Area */}
@@ -97,18 +110,17 @@ export default function ProductGrid() {
                                     {product.title}
                                 </h3>
                                 <p className="text-gray-400 text-sm leading-relaxed mb-6 group-hover:text-white/90 transition-colors">
-                                    {product.description}
+                                    {product.description.split(' ').slice(0, 6).join(' ')}...
                                 </p>
 
-                                <Link
-                                    href={product.link}
+                                <button
                                     className="flex items-center gap-2 text-globe-red font-black text-xs uppercase tracking-widest group-hover:text-white transition-colors"
                                 >
                                     View Details
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7-7 7M3 12h18" />
                                     </svg>
-                                </Link>
+                                </button>
                             </div>
                         </div>
                     ))}

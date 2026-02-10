@@ -45,7 +45,7 @@ export default function Footer() {
     }, []);
 
     return (
-        <footer className="bg-globe-black text-white py-20 border-t-8 border-globe-red">
+        <footer className="bg-[#1a1a1a] text-white py-20 border-t-8 border-globe-red">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
                     <div className="md:col-span-3">
@@ -53,12 +53,12 @@ export default function Footer() {
                             {/* To adjust logo size: Change height and width values below (in pixels) */}
                             <div>
                                 <Image
-                                    src="/WhatsApp_Image_2026-01-30_at_11.21.42_PM-removebg-preview.png"
+                                    src="/image.png"
                                     alt="Globetech Innovations"
                                     width={300}
                                     height={300}
                                     style={{ height: '110px', width: 'auto' }}
-                                    className="object-contain invert brightness-95 hue-rotate-180 saturate-200 contrast-125"
+                                    className="object-contain"
                                 />
                             </div>
                         </div>
