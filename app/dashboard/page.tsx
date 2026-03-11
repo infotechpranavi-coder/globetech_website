@@ -5,7 +5,6 @@ import DashboardLayout from '@/components/dashboard-layout';
 import AnalyticsTab from '@/components/dashboard/AnalyticsTab';
 import OrdersTab from '@/components/dashboard/OrdersTab';
 import DevelopersTab from '@/components/dashboard/DevelopersTab';
-import BlogsTab from '@/components/dashboard/BlogsTab';
 import HeroManager from '@/components/dashboard/HeroManager';
 import TestimonialsTab from '@/components/dashboard/TestimonialsTab';
 import DashboardLogin from '@/components/dashboard/DashboardLogin';
@@ -42,8 +41,6 @@ export default function DashboardPage() {
         return <TestimonialsTab />;
       case 'orders':
         return <OrdersTab />;
-      case 'blogs':
-        return <BlogsTab />;
       case 'settings':
         return <SettingsTab />;
       default:

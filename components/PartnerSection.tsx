@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 
 interface Partner {
-    id: string | number;
+    _id?: string | number;
+    id?: string | number;
     name: string;
-    logo: React.ReactNode;
+    logo: string | React.ReactNode;
 }
 
-const PARTNERS: Partner[] = [
+const STATIC_PARTNERS: Partner[] = [
     { id: 1, name: "Maruti Suzuki", logo: <div className="text-blue-900 font-black text-xl italic uppercase tracking-tighter">Maruti Suzuki</div> },
     { id: 2, name: "Adani", logo: <div className="text-blue-600 font-black text-2xl uppercase tracking-tighter">ADANI</div> },
     { id: 3, name: "ITC", logo: <div className="text-globe-black font-black text-3xl uppercase tracking-tighter">ITC</div> },
@@ -20,9 +21,49 @@ const PARTNERS: Partner[] = [
 ];
 
 export default function PartnerSection() {
-    // Triple the list to ensure a seamless loop with enough width
-    const row1 = [...PARTNERS, ...PARTNERS, ...PARTNERS];
-    const row2 = [...PARTNERS, ...PARTNERS, ...PARTNERS].reverse(); // Reverse for variety in row 2
+    const [partners, setPartners] = useState<Partner[]>([]);
+
+    useEffect(() => {
+        const fetchPartners = async () => {
+            try {
+                const response = await fetch('/api/developers');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.length > 0) {
+                        setPartners(data);
+                    } else {
+                        setPartners(STATIC_PARTNERS);
+                    }
+                } else {
+                    setPartners(STATIC_PARTNERS);
+                }
+            } catch (error) {
+                console.error('Error fetching partners:', error);
+                setPartners(STATIC_PARTNERS);
+            }
+        };
+        fetchPartners();
+    }, []);
+
+    // Helper to render logo
+    const renderLogo = (partner: Partner) => {
+        if (typeof partner.logo === 'string') {
+            return (
+                <img
+                    src={partner.logo}
+                    alt={partner.name}
+                    className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-500"
+                />
+            );
+        }
+        return partner.logo;
+    };
+
+    // Triple the list for seamless loop
+    const row1 = [...partners, ...partners, ...partners];
+    const row2 = [...partners, ...partners, ...partners].reverse();
+
+    if (partners.length === 0) return null;
 
     return (
         <section className="py-20 bg-gray-50 overflow-hidden">
@@ -43,10 +84,10 @@ export default function PartnerSection() {
                     <div className="flex animate-scroll-left gap-6 px-3">
                         {row1.map((partner, index) => (
                             <div
-                                key={`r1-${partner.id}-${index}`}
-                                className="flex-shrink-0 w-64 h-32 bg-white rounded-sm shadow-xl border border-gray-100 flex items-center justify-center p-6 hover:shadow-2xl transition-all duration-300"
+                                key={`r1-${partner._id || partner.id}-${index}`}
+                                className="flex-shrink-0 w-64 h-32 bg-white rounded-sm shadow-xl border border-gray-100 flex items-center justify-center p-8 hover:shadow-2xl transition-all duration-300 group"
                             >
-                                {partner.logo}
+                                {renderLogo(partner)}
                             </div>
                         ))}
                     </div>
@@ -57,10 +98,10 @@ export default function PartnerSection() {
                     <div className="flex animate-scroll-right gap-6 px-3">
                         {row2.map((partner, index) => (
                             <div
-                                key={`r2-${partner.id}-${index}`}
-                                className="flex-shrink-0 w-64 h-32 bg-white rounded-sm shadow-xl border border-gray-100 flex items-center justify-center p-6 hover:shadow-2xl transition-all duration-300"
+                                key={`r2-${partner._id || partner.id}-${index}`}
+                                className="flex-shrink-0 w-64 h-32 bg-white rounded-sm shadow-xl border border-gray-100 flex items-center justify-center p-8 hover:shadow-2xl transition-all duration-300 group"
                             >
-                                {partner.logo}
+                                {renderLogo(partner)}
                             </div>
                         ))}
                     </div>

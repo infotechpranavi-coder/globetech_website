@@ -15,10 +15,9 @@ const tabs = [
   { id: 'hero', label: 'Hero Slides', icon: '🎞️' },
   { id: 'industries', label: 'Industries', icon: '🏭' },
   { id: 'products', label: 'Products', icon: '⚙️' },
-  { id: 'partners', label: 'Partners', icon: '🏢' },
+  { id: 'partners', label: 'Partners', icon: '🤝' },
   { id: 'testimonials', label: 'Testimonials', icon: '💬' },
   { id: 'orders', label: 'Enquiries', icon: '📋' },
-  { id: 'blogs', label: 'Blogs', icon: '📝' },
   { id: 'settings', label: 'Site Settings', icon: '🛠️' },
 ];
 

@@ -38,12 +38,14 @@ export default function Preloader() {
 
             <div className="relative flex flex-col items-center">
                 {/* Anti-clockwise Rotating Rim */}
-                <div className="relative w-48 h-48 md:w-64 md:h-64 mb-12">
+                <div className="relative w-48 h-48 md:w-64 md:h-64 mb-12 flex items-center justify-center">
+                    {/* White circle background for logo visibility */}
+                    <div className="absolute inset-0 bg-white rounded-full shadow-[0_0_30px_rgba(255,255,255,0.3)]"></div>
                     <Image
-                        src="/_Vossen_Wheels_CG-205T-removebg-preview.png"
-                        alt="Globe-Tech Industrial Rim"
+                        src="/WhatsApp_Image_2026-01-30_at_11.21.42_PM-removebg-preview.png"
+                        alt="Globe-Tech Logo"
                         fill
-                        className="object-contain animate-spin-reverse-slow"
+                        className="object-contain relative z-10 p-2 animate-spin-slow"
                         priority
                     />
                     {/* Inner Light Effect */}
@@ -58,7 +60,7 @@ export default function Preloader() {
                         </h2>
                         <div className="flex items-center gap-4 animate-fade-in-up [animation-delay:200ms]">
                             <div className="h-[2px] w-8 bg-globe-red"></div>
-                            <span className="text-globe-red font-black uppercase tracking-[0.3em] text-xs md:text-sm">Automation</span>
+                            <span className="text-globe-red font-black uppercase tracking-[0.3em] text-xs md:text-sm">Innovations</span>
                             <div className="h-[2px] w-8 bg-globe-red"></div>
                         </div>
                     </div>
@@ -72,7 +74,7 @@ export default function Preloader() {
 
             {/* Corporate Slogan (Hidden on Mobile) */}
             <div className="absolute bottom-12 text-white/20 font-black uppercase tracking-[0.5em] text-[10px] hidden md:block animate-fade-in [animation-delay:500ms]">
-                Engineering Excellence • Global Solutions
+                Engineering • Automation • Technology
             </div>
         </div>
     );

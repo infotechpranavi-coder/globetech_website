@@ -2,28 +2,23 @@
 
 import { useState, useEffect } from 'react';
 
-interface Developer {
+interface Partner {
   _id: string;
   name: string;
   logo?: string;
-  description?: string;
-  website?: string;
-  establishedYear?: number;
-  totalProjects?: number;
-  rating?: number;
 }
 
 export default function DevelopersTab() {
-  const [developers, setDevelopers] = useState<Developer[]>([]);
+  const [partners, setPartners] = useState<Partner[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editingDeveloper, setEditingDeveloper] = useState<Developer | null>(null);
+  const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
 
   useEffect(() => {
-    fetchDevelopers();
+    fetchPartners();
   }, []);
 
-  const fetchDevelopers = async () => {
+  const fetchPartners = async () => {
     try {
       setLoading(true);
       const response = await fetch('/api/developers', {
@@ -32,30 +27,30 @@ export default function DevelopersTab() {
           'Cache-Control': 'no-cache',
         },
       });
-      if (!response.ok) throw new Error('Failed to fetch developers');
+      if (!response.ok) throw new Error('Failed to fetch partners');
       const data = await response.json();
-      console.log('Fetched developers:', data.length);
-      setDevelopers(data);
+      console.log('Fetched partners:', data.length);
+      setPartners(data);
     } catch (error) {
-      console.error('Error fetching developers:', error);
-      setDevelopers([]);
+      console.error('Error fetching partners:', error);
+      setPartners([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddDeveloper = () => {
-    setEditingDeveloper(null);
+  const handleAddPartner = () => {
+    setEditingPartner(null);
     setShowModal(true);
   };
 
-  const handleEditDeveloper = (developer: Developer) => {
-    setEditingDeveloper(developer);
+  const handleEditPartner = (partner: Partner) => {
+    setEditingPartner(partner);
     setShowModal(true);
   };
 
-  const handleDeleteDeveloper = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this developer?')) {
+  const handleDeletePartner = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this partner?')) {
       return;
     }
 
@@ -64,13 +59,13 @@ export default function DevelopersTab() {
         method: 'DELETE',
       });
 
-      if (!response.ok) throw new Error('Failed to delete developer');
+      if (!response.ok) throw new Error('Failed to delete partner');
 
-      alert('Developer deleted successfully!');
-      fetchDevelopers();
+      alert('Partner deleted successfully!');
+      fetchPartners();
     } catch (error) {
-      console.error('Error deleting developer:', error);
-      alert('Failed to delete developer');
+      console.error('Error deleting partner:', error);
+      alert('Failed to delete partner');
     }
   };
 
@@ -84,7 +79,7 @@ export default function DevelopersTab() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Loading developers...</div>
+        <div className="text-gray-500">Loading partners...</div>
       </div>
     );
   }
@@ -93,130 +88,95 @@ export default function DevelopersTab() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Developers</h1>
-          <p className="text-gray-600 mt-2">Manage property developers and builders</p>
+          <h1 className="text-3xl font-bold text-gray-900">Partners</h1>
+          <p className="text-gray-600 mt-2">Manage your trusted industrial partners and logos</p>
         </div>
         <button
-          onClick={handleAddDeveloper}
+          onClick={handleAddPartner}
           className="bg-globe-red text-white px-6 py-3 rounded-lg font-semibold hover:bg-black transition shadow-lg"
         >
           + Add Partner
         </button>
       </div>
 
-      {developers.length === 0 ? (
+      {partners.length === 0 ? (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <div className="text-6xl mb-4">🏢</div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">No developers yet</h3>
-          <p className="text-gray-600 mb-6">Get started by adding your first developer</p>
+          <div className="text-6xl mb-4">🤝</div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">No partners yet</h3>
+          <p className="text-gray-600 mb-6">Start adding your industrial partners</p>
           <button
-            onClick={handleAddDeveloper}
-            className="bg-brand-secondary text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-secondary-dark transition"
+            onClick={handleAddPartner}
+            className="bg-globe-red text-white px-6 py-3 rounded-lg font-semibold hover:bg-black transition"
           >
-            Add Your First Developer
+            Add Your First Partner
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {developers.map((developer) => (
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          {partners.map((partner) => (
             <div
-              key={developer._id}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-xl transition-all duration-300 group relative"
+              key={partner._id}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-xl transition-all duration-300 group relative flex flex-col items-center"
             >
               {/* Zoom Icon Button */}
-              {developer.logo && (
+              {partner.logo && (
                 <button
-                  onClick={(e) => handleZoom(e, developer.logo!)}
-                  className="absolute top-4 right-4 p-2 bg-gray-100 rounded-full text-gray-400 hover:text-brand-primary hover:bg-brand-primary/10 transition-colors opacity-0 group-hover:opacity-100 z-10"
+                  onClick={(e) => handleZoom(e, partner.logo!)}
+                  className="absolute top-2 right-2 p-1.5 bg-gray-100 rounded-full text-gray-400 hover:text-globe-red hover:bg-red-50 transition-colors opacity-0 group-hover:opacity-100 z-10"
                   title="Zoom Logo"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" /></svg>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" /></svg>
                 </button>
               )}
 
-              {developer.logo ? (
-                <div className="w-full h-40 bg-white border-2 border-gray-100 rounded-lg mb-4 flex items-center justify-center p-4 transition-transform duration-500 group-hover:scale-105">
+              {partner.logo ? (
+                <div className="w-full aspect-square bg-white border border-gray-100 rounded-lg mb-3 flex items-center justify-center p-4 transition-transform duration-500 group-hover:scale-105">
                   <img
-                    src={developer.logo}
-                    alt={developer.name}
+                    src={partner.logo}
+                    alt={partner.name}
                     className="max-w-full max-h-full object-contain"
                   />
                 </div>
               ) : (
-                <div className="w-full h-40 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg mb-4 flex items-center justify-center">
-                  <span className="text-white font-bold text-2xl">{developer.name.charAt(0).toUpperCase()}</span>
+                <div className="w-full aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
+                  <span className="text-gray-400 font-bold text-xl">{partner.name.charAt(0).toUpperCase()}</span>
                 </div>
               )}
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{developer.name}</h3>
-              {developer.rating && (
-                <div className="flex items-center mb-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <svg
-                      key={star}
-                      className={`w-4 h-4 ${star <= (developer.rating || 0) ? 'text-brand-secondary' : 'text-gray-300'}`}
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              )}
-              {developer.description && (
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">{developer.description}</p>
-              )}
-              <div className="text-xs font-medium text-gray-500 mb-4 uppercase tracking-wide">
-                {developer.establishedYear && <span>Est. {developer.establishedYear}</span>}
-                {developer.establishedYear && developer.totalProjects && <span> • </span>}
-                {developer.totalProjects && <span>{developer.totalProjects} Projects</span>}
-              </div>
+              <h3 className="text-sm font-bold text-gray-900 text-center truncate w-full">{partner.name}</h3>
 
-              <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
-                {developer.website ? (
-                  <a
-                    href={developer.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm font-bold text-brand-primary hover:text-brand-primary-dark"
-                  >
-                    Visit Website →
-                  </a>
-                ) : <div></div>}
-
-                <div className="flex items-center space-x-3">
-                  <button
-                    onClick={() => handleEditDeveloper(developer)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                    title="Edit"
-                  >
-                    ✏️
-                  </button>
-                  <button
-                    onClick={() => handleDeleteDeveloper(developer._id)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Delete"
-                  >
-                    🗑️
-                  </button>
-                </div>
+              <div className="flex items-center space-x-2 mt-3 pt-3 border-t border-gray-50 w-full justify-center">
+                <button
+                  onClick={() => handleEditPartner(partner)}
+                  className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors text-sm"
+                  title="Edit"
+                >
+                  ✏️
+                </button>
+                <button
+                  onClick={() => handleDeletePartner(partner._id)}
+                  className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors text-sm"
+                  title="Delete"
+                >
+                  🗑️
+                </button>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Developer Form Modal */}
+      {/* Partner Form Modal */}
       {showModal && (
-        <DeveloperFormModal
-          developer={editingDeveloper}
+        <PartnerFormModal
+          partner={editingPartner}
           onClose={() => {
             setShowModal(false);
-            setEditingDeveloper(null);
+            setEditingPartner(null);
           }}
           onSuccess={() => {
             setShowModal(false);
-            setEditingDeveloper(null);
-            fetchDevelopers();
+            setEditingPartner(null);
+            fetchPartners();
           }}
         />
       )}
@@ -248,24 +208,19 @@ export default function DevelopersTab() {
 }
 
 
-// Developer Form Modal Component
-function DeveloperFormModal({
-  developer,
+// Partner Form Modal Component
+function PartnerFormModal({
+  partner,
   onClose,
   onSuccess,
 }: {
-  developer: Developer | null;
+  partner: Partner | null;
   onClose: () => void;
   onSuccess: () => void;
 }) {
   const [formData, setFormData] = useState({
-    name: developer?.name || '',
-    logo: developer?.logo || '',
-    description: developer?.description || '',
-    website: developer?.website || '',
-    establishedYear: developer?.establishedYear || '',
-    totalProjects: developer?.totalProjects || '',
-    rating: developer?.rating || 5,
+    name: partner?.name || '',
+    logo: partner?.logo || '',
   });
   const [submitting, setSubmitting] = useState(false);
   const [uploadMethod, setUploadMethod] = useState<'url' | 'file'>('url');
@@ -306,10 +261,10 @@ function DeveloperFormModal({
     setSubmitting(true);
 
     try {
-      const url = developer
-        ? `/api/developers/${developer._id}`
+      const url = partner
+        ? `/api/developers/${partner._id}`
         : '/api/developers';
-      const method = developer ? 'PUT' : 'POST';
+      const method = partner ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
         method,
@@ -319,17 +274,17 @@ function DeveloperFormModal({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to save developer');
+        throw new Error(error.message || 'Failed to save partner');
       }
 
-      alert(developer ? 'Developer updated successfully!' : 'Developer created successfully!');
+      alert(partner ? 'Partner updated successfully!' : 'Partner added successfully!');
       // Small delay to ensure database is updated
       setTimeout(() => {
         onSuccess();
       }, 100);
     } catch (error: any) {
-      console.error('Error saving developer:', error);
-      alert(error.message || 'Failed to save developer');
+      console.error('Error saving partner:', error);
+      alert(error.message || 'Failed to save partner');
     } finally {
       setSubmitting(false);
     }
@@ -337,10 +292,10 @@ function DeveloperFormModal({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {developer ? 'Edit Developer' : 'Add New Developer'}
+          <h2 className="text-xl font-bold text-gray-900">
+            {partner ? 'Edit Partner' : 'Add New Partner'}
           </h2>
           <button
             onClick={onClose}
@@ -350,33 +305,33 @@ function DeveloperFormModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Developer Name *
+            <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">
+              Partner Name *
             </label>
             <input
               type="text"
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g., Godrej Properties, Lodha Group"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+              placeholder="e.g. Maruti Suzuki, Adani"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-globe-red focus:border-transparent text-gray-900 bg-white outline-none"
             />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Logo (Optional)
+              <label className="block text-sm font-bold text-gray-700 uppercase tracking-wide">
+                Partner Logo *
               </label>
               <div className="flex gap-2 bg-gray-100 rounded-lg p-1">
                 <button
                   type="button"
                   onClick={() => setUploadMethod('url')}
-                  className={`px-3 py-1 text-xs font-semibold rounded transition-all ${uploadMethod === 'url'
-                    ? 'bg-white text-brand-primary shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                  className={`px-3 py-1 text-[10px] font-bold rounded transition-all uppercase ${uploadMethod === 'url'
+                    ? 'bg-white text-globe-red shadow-sm'
+                    : 'text-gray-500 hover:text-gray-900'
                     }`}
                 >
                   URL
@@ -384,12 +339,12 @@ function DeveloperFormModal({
                 <button
                   type="button"
                   onClick={() => setUploadMethod('file')}
-                  className={`px-3 py-1 text-xs font-semibold rounded transition-all ${uploadMethod === 'file'
-                    ? 'bg-white text-brand-primary shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                  className={`px-3 py-1 text-[10px] font-bold rounded transition-all uppercase ${uploadMethod === 'file'
+                    ? 'bg-white text-globe-red shadow-sm'
+                    : 'text-gray-500 hover:text-gray-900'
                     }`}
                 >
-                  Upload File
+                  Upload
                 </button>
               </div>
             </div>
@@ -397,10 +352,11 @@ function DeveloperFormModal({
             {uploadMethod === 'url' ? (
               <input
                 type="url"
+                required
                 value={formData.logo}
                 onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
                 placeholder="https://example.com/logo.png"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-globe-red focus:border-transparent text-gray-900 bg-white outline-none"
               />
             ) : (
               <div>
@@ -408,15 +364,15 @@ function DeveloperFormModal({
                   type="file"
                   accept="image/*"
                   onChange={handleFileUpload}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary-dark file:cursor-pointer"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-globe-red focus:border-transparent text-gray-900 bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-globe-red file:text-white hover:file:bg-black file:cursor-pointer"
                 />
                 <p className="text-xs text-gray-500 mt-1">Max file size: 2MB. Supported formats: JPG, PNG, SVG, WebP</p>
               </div>
             )}
 
             {formData.logo && (
-              <div className="mt-3">
-                <div className="w-full h-32 bg-white border-2 border-gray-200 rounded-xl flex items-center justify-center p-4 relative group">
+              <div className="mt-4">
+                <div className="w-full aspect-video bg-white border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center p-4 relative group">
                   <img
                     src={formData.logo}
                     alt="Logo preview"
@@ -428,117 +384,30 @@ function DeveloperFormModal({
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, logo: '' })}
-                    className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                    className="absolute -top-2 -right-2 p-1.5 bg-red-500 text-white rounded-full shadow-lg hover:bg-red-600 transition-colors"
                     title="Remove logo"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    ×
                   </button>
                 </div>
               </div>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description (Optional)
-            </label>
-            <textarea
-              rows={3}
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Brief description about the developer"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Website URL (Optional)
-            </label>
-            <input
-              type="url"
-              value={formData.website}
-              onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-              placeholder="https://example.com"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Established Year (Optional)
-              </label>
-              <input
-                type="number"
-                value={formData.establishedYear}
-                onChange={(e) => setFormData({ ...formData, establishedYear: e.target.value ? parseInt(e.target.value) : '' })}
-                placeholder="e.g., 2007"
-                min="1900"
-                max={new Date().getFullYear()}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Total Projects (Optional)
-              </label>
-              <input
-                type="number"
-                value={formData.totalProjects}
-                onChange={(e) => setFormData({ ...formData, totalProjects: e.target.value ? parseInt(e.target.value) : '' })}
-                placeholder="e.g., 23"
-                min="0"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Rating (1-5 stars) (Optional)
-            </label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="number"
-                value={formData.rating}
-                onChange={(e) => setFormData({ ...formData, rating: Math.min(5, Math.max(1, parseInt(e.target.value) || 5)) })}
-                min="1"
-                max="5"
-                className="w-20 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent text-gray-900 bg-white"
-              />
-              <div className="flex items-center">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <svg
-                    key={star}
-                    className={`w-5 h-5 ${star <= formData.rating ? 'text-brand-secondary' : 'text-gray-300'}`}
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">Default: 5 stars (can be changed later)</p>
-          </div>
-
-          <div className="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+          <div className="flex justify-end space-x-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-600 font-bold hover:bg-gray-50 transition-colors text-sm uppercase tracking-wider"
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={submitting || uploading}
-              className="px-6 py-2 bg-brand-primary text-white rounded-lg font-semibold hover:bg-brand-primary-light disabled:opacity-50"
+              disabled={submitting || uploading || !formData.logo}
+              className="px-6 py-2 bg-globe-red text-white rounded-lg font-bold hover:bg-black disabled:opacity-50 transition-colors text-sm uppercase tracking-wider shadow-lg"
             >
-              {submitting ? 'Saving...' : uploading ? 'Uploading...' : developer ? 'Update Partner' : 'Add Partner'}
+              {submitting ? 'Saving...' : uploading ? 'Uploading...' : partner ? 'Update Partner' : 'Add Partner'}
             </button>
           </div>
         </form>
@@ -546,4 +415,3 @@ function DeveloperFormModal({
     </div>
   );
 }
-

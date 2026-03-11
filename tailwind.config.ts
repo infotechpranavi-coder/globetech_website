@@ -27,6 +27,8 @@ const config: Config = {
       },
       animation: {
         'spin-reverse-slow': 'spin-reverse 4s linear infinite',
+        'spin-reverse-v-slow': 'spin-reverse 10s linear infinite',
+        'spin-slow': 'spin 4s linear infinite',
         'slide-out-right': 'slideOutRight 1s ease-in-out forwards',
         'fade-in': 'fadeIn 0.5s ease-out forwards',
         'fade-in-up': 'fadeInUp 1s ease-out forwards',
@@ -43,6 +45,10 @@ const config: Config = {
         'spin-reverse': {
           from: { transform: 'rotate(0deg)' },
           to: { transform: 'rotate(-360deg)' },
+        },
+        'spin': {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
         },
         slideOutRight: {
           '0%': { transform: 'translateX(0)', opacity: '1' },

@@ -1,17 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 interface Testimonial {
     _id?: string;
     name: string;
-    company: string;
-    role: string;
     quote: string;
-    description: string;
-    image: string;
-    createdAt?: string;
+    image?: string;
 }
 
 export default function TestimonialsTab() {
@@ -21,10 +17,7 @@ export default function TestimonialsTab() {
     const [currentTestimonial, setCurrentTestimonial] = useState<Testimonial | null>(null);
     const [formData, setFormData] = useState<Testimonial>({
         name: '',
-        company: '',
-        role: '',
         quote: '',
-        description: '',
         image: '',
     });
     const [submitting, setSubmitting] = useState(false);
@@ -49,6 +42,7 @@ export default function TestimonialsTab() {
     };
 
     const handleOpenModal = (testimonial: Testimonial | null = null) => {
+        console.log('Opening Modal...', testimonial);
         if (testimonial) {
             setCurrentTestimonial(testimonial);
             setFormData(testimonial);
@@ -56,10 +50,7 @@ export default function TestimonialsTab() {
             setCurrentTestimonial(null);
             setFormData({
                 name: '',
-                company: '',
-                role: '',
                 quote: '',
-                description: '',
                 image: '',
             });
         }
@@ -67,6 +58,7 @@ export default function TestimonialsTab() {
     };
 
     const handleCloseModal = () => {
+        console.log('Closing Modal...');
         setIsModalOpen(false);
         setCurrentTestimonial(null);
     };
@@ -87,15 +79,17 @@ export default function TestimonialsTab() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    company: formData.name, // Support home page field mapping
+                }),
             });
 
             if (response.ok) {
                 fetchTestimonials();
                 handleCloseModal();
             } else {
-                const error = await response.json();
-                alert(error.message || 'Something went wrong');
+                alert('Something went wrong. Please try again.');
             }
         } catch (error) {
             console.error('Error saving testimonial:', error);
@@ -142,12 +136,11 @@ export default function TestimonialsTab() {
                 const data = await response.json();
                 setFormData({ ...formData, image: data.url });
             } else {
-                const error = await response.json();
-                alert(error.error || 'Failed to upload image');
+                alert('Failed to upload image');
             }
         } catch (error) {
             console.error('Error uploading image:', error);
-            alert('Error uploading image. Please try again.');
+            alert('Error uploading image');
         } finally {
             setUploading(false);
         }
@@ -156,7 +149,7 @@ export default function TestimonialsTab() {
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-globe-red"></div>
             </div>
         );
     }
@@ -165,175 +158,159 @@ export default function TestimonialsTab() {
         <div>
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Testimonials</h1>
-                    <p className="text-gray-600 mt-2">Manage customer reviews and testimonials</p>
+                    <h1 className="text-3xl font-black text-globe-black tracking-tight">Testimonials</h1>
+                    <p className="text-gray-500 mt-2 font-medium">Manage what clients say about Globe-Tech</p>
                 </div>
                 <button
                     onClick={() => handleOpenModal()}
-                    className="bg-brand-primary text-white px-6 py-2 rounded-lg font-semibold hover:bg-brand-primary-dark transition shadow-md"
+                    className="bg-globe-red text-white px-8 py-3 rounded-lg font-bold hover:bg-black transition-all shadow-lg hover:shadow-xl uppercase tracking-wider text-sm"
                 >
-                    Add Testimonial
+                    + Add New
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {testimonials.map((testimonial) => (
-                    <div key={testimonial._id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-                        <div className="p-6 flex-grow">
-                            <div className="flex items-center space-x-4 mb-4">
-                                <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+                    <div key={testimonial._id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-xl transition-all duration-500">
+                        <div className="p-8 flex-grow">
+                            <div className="flex items-center space-x-4 mb-6">
+                                <div className="relative w-14 h-14 rounded-full overflow-hidden flex-shrink-0 border-2 border-gray-50">
                                     <Image
-                                        src={testimonial.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop"}
+                                        src={testimonial.image || "/gs_realty.png"}
                                         alt={testimonial.name}
                                         fill
                                         className="object-cover"
                                     />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-gray-900">{testimonial.name}</h3>
-                                    <p className="text-xs font-black text-globe-red uppercase">{testimonial.company}</p>
-                                    <p className="text-[10px] text-gray-500">{testimonial.role}</p>
+                                    <h3 className="font-extrabold text-globe-black uppercase tracking-tight">{testimonial.name}</h3>
+                                    <div className="w-8 h-0.5 bg-globe-red mt-1"></div>
                                 </div>
                             </div>
-                            <p className="text-brand-secondary font-medium italic mb-2">"{testimonial.quote}"</p>
-                            <p className="text-gray-600 text-sm line-clamp-3">{testimonial.description}</p>
+                            <div className="relative">
+                                <span className="absolute -top-4 -left-2 text-4xl text-gray-100 font-serif leading-none">"</span>
+                                <p className="text-gray-600 text-lg leading-relaxed italic relative z-10">
+                                    {testimonial.quote}
+                                </p>
+                            </div>
                         </div>
-                        <div className="p-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3">
+                        <div className="p-4 bg-gray-50 border-t border-gray-100 flex justify-end space-x-2">
                             <button
                                 onClick={() => handleOpenModal(testimonial)}
-                                className="text-brand-primary hover:text-brand-primary-dark font-medium text-sm"
+                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors font-bold text-xs uppercase"
                             >
-                                Edit
+                                ✏️ Edit
                             </button>
                             <button
                                 onClick={() => testimonial._id && handleDelete(testimonial._id)}
-                                className="text-red-600 hover:text-red-700 font-medium text-sm"
+                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors font-bold text-xs uppercase"
                             >
-                                Delete
+                                🗑️ Delete
                             </button>
                         </div>
                     </div>
                 ))}
 
                 {testimonials.length === 0 && (
-                    <div className="col-span-full py-20 text-center bg-white rounded-xl border-2 border-dashed border-gray-200">
-                        <div className="text-4xl mb-4">💬</div>
-                        <h3 className="text-gray-900 font-semibold">No testimonials found</h3>
-                        <p className="text-gray-500 mt-1">Start by adding your first customer review</p>
+                    <div className="col-span-full py-24 text-center bg-white rounded-2xl border-2 border-dashed border-gray-200">
+                        <div className="text-6xl mb-6">💬</div>
+                        <h3 className="text-globe-black font-black text-2xl uppercase italic">No Testimonials Yet</h3>
+                        <p className="text-gray-400 mt-2 font-medium">Your client feedback will appear here once added.</p>
+                        <button
+                            onClick={() => handleOpenModal()}
+                            className="mt-8 bg-globe-red text-white px-8 py-3 rounded-lg font-bold hover:bg-black transition-all shadow-lg uppercase tracking-widest text-sm"
+                        >
+                            Add Your First
+                        </button>
                     </div>
                 )}
             </div>
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 overflow-y-auto">
-                    <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                        <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-                            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm bg-black/60">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+                        <div className="bg-globe-black px-6 py-4 flex items-center justify-between">
+                            <h2 className="text-white font-black uppercase tracking-tighter italic">
+                                {currentTestimonial ? 'Update Feedback' : 'New Client Feedback'}
+                            </h2>
+                            <button onClick={handleCloseModal} className="text-white/60 hover:text-white transition-colors text-2xl font-light">×</button>
                         </div>
 
-                        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+                            <div>
+                                <label className="block text-xs font-black text-globe-black uppercase tracking-[0.2em] mb-2 text-center">Client / Firm Name *</label>
+                                <input
+                                    type="text"
+                                    required
+                                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-100 focus:border-globe-red focus:ring-0 text-gray-900 bg-gray-50 font-bold transition-all outline-none text-center uppercase tracking-tight"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    placeholder="e.g. Maruti Suzuki"
+                                />
+                            </div>
 
-                        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                            <form onSubmit={handleSubmit}>
-                                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                    <h3 className="text-xl font-bold text-gray-900 mb-6">
-                                        {currentTestimonial ? 'Edit Testimonial' : 'Add New Testimonial'}
-                                    </h3>
+                            <div>
+                                <label className="block text-xs font-black text-globe-black uppercase tracking-[0.2em] mb-2 text-center">Their Feedback *</label>
+                                <textarea
+                                    rows={4}
+                                    required
+                                    className="w-full px-4 py-3 rounded-lg border-2 border-gray-100 focus:border-globe-red focus:ring-0 text-gray-900 bg-gray-50 font-medium transition-all outline-none resize-none italic"
+                                    value={formData.quote}
+                                    onChange={(e) => setFormData({ ...formData, quote: e.target.value })}
+                                    placeholder="Write the testimonial here..."
+                                />
+                            </div>
 
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name *</label>
-                                            <input
-                                                type="text"
-                                                required
-                                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-brand-primary focus:border-brand-primary text-gray-900"
-                                                value={formData.name}
-                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                placeholder="e.g. Arjun Sharma"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
-                                            <input
-                                                type="text"
-                                                required
-                                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-brand-primary focus:border-brand-primary text-gray-900"
-                                                value={formData.company}
-                                                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                                                placeholder="e.g. SIEMENS"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Role / Designation</label>
-                                            <input
-                                                type="text"
-                                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-brand-primary focus:border-brand-primary text-gray-900"
-                                                value={formData.role}
-                                                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                                                placeholder="e.g. Production Manager"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Short Quote *</label>
-                                            <input
-                                                type="text"
-                                                required
-                                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-brand-primary focus:border-brand-primary text-gray-900"
-                                                value={formData.quote}
-                                                onChange={(e) => setFormData({ ...formData, quote: e.target.value })}
-                                                placeholder="e.g. Best real estate agency!"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Full Review Description</label>
-                                            <textarea
-                                                rows={4}
-                                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-brand-primary focus:border-brand-primary text-gray-900"
-                                                value={formData.description}
-                                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                                placeholder="Tell the full story..."
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">Customer / Logo Image</label>
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={handleImageUpload}
-                                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-brand-primary focus:border-brand-primary text-gray-900 bg-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
-                                            />
-                                            {formData.image && (
-                                                <div className="mt-2 relative w-16 h-16 rounded-full overflow-hidden border border-gray-200">
-                                                    <Image src={formData.image} alt="Preview" fill className="object-cover" />
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                    <button
-                                        type="submit"
-                                        disabled={submitting || uploading}
-                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-primary text-base font-medium text-white hover:bg-brand-primary-dark focus:outline-none sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
+                            <div>
+                                <label className="block text-xs font-black text-globe-black uppercase tracking-[0.2em] mb-2 text-center">User Image (Optional)</label>
+                                <div className="flex flex-col items-center space-y-4">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className="hidden"
+                                        id="testimonial-image"
+                                    />
+                                    <label
+                                        htmlFor="testimonial-image"
+                                        className="w-full py-3 px-4 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-globe-red hover:bg-red-50 transition-all font-bold text-gray-500 text-xs uppercase"
                                     >
-                                        {submitting ? 'Saving...' : uploading ? 'Uploading...' : 'Save Testimonial'}
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleCloseModal}
-                                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                                    >
-                                        Cancel
-                                    </button>
+                                        {uploading ? '⌛ Uploading...' : '📁 Choose Photo'}
+                                    </label>
+
+                                    {formData.image && (
+                                        <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-gray-50 shadow-md transform rotate-3">
+                                            <Image src={formData.image} alt="Preview" fill className="object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, image: '' })}
+                                                className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity"
+                                            >
+                                                <span className="text-white text-xs font-bold uppercase">Remove</span>
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+
+                            <div className="flex gap-4 pt-4">
+                                <button
+                                    type="button"
+                                    onClick={handleCloseModal}
+                                    className="flex-1 px-6 py-3 rounded-lg border-2 border-gray-100 text-gray-400 font-bold hover:bg-gray-50 transition-all text-xs uppercase tracking-widest"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={submitting || uploading}
+                                    className="flex-1 px-6 py-3 bg-globe-red text-white rounded-lg font-black hover:bg-black transition-all shadow-lg disabled:opacity-50 text-xs uppercase tracking-widest"
+                                >
+                                    {submitting ? 'Processing...' : 'Save Feedback'}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}

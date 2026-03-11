@@ -182,17 +182,54 @@ export default function IndustriesTab() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-2">
-                                <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Display Image</label>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-sm outline-none focus:ring-2 focus:ring-globe-red transition bg-white file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-xs file:font-black file:uppercase file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
-                                />
+                            <div className="space-y-4">
+                                <label className="text-xs font-black text-gray-400 uppercase tracking-widest block">Display Image</label>
+                                
+                                <div className="space-y-4">
+                                    {/* Local Upload */}
+                                    <div className="bg-gray-50 p-4 rounded-sm border border-gray-200">
+                                        <p className="text-[10px] text-gray-400 font-black uppercase mb-2">Option 1: Upload from local system</p>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageUpload}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-sm outline-none focus:ring-2 focus:ring-globe-red transition bg-white file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-xs file:font-black file:uppercase file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                                        />
+                                    </div>
+
+                                    {/* OR Separator */}
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-px flex-1 bg-gray-200"></div>
+                                        <span className="text-[10px] text-gray-400 font-black uppercase">OR</span>
+                                        <div className="h-px flex-1 bg-gray-200"></div>
+                                    </div>
+
+                                    {/* URL Input */}
+                                    <div className="bg-gray-50 p-4 rounded-sm border border-gray-200">
+                                        <p className="text-[10px] text-gray-400 font-black uppercase mb-2">Option 2: Use Image URL</p>
+                                        <input
+                                            type="text"
+                                            value={image}
+                                            onChange={(e) => setImage(e.target.value)}
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-sm outline-none focus:ring-2 focus:ring-globe-red transition bg-white text-gray-900 text-sm"
+                                            placeholder="https://example.com/industry-image.jpg"
+                                        />
+                                    </div>
+                                </div>
+
                                 {image && (
-                                    <div className="relative mt-4 aspect-video w-full rounded-sm overflow-hidden border-2 border-gray-100">
-                                        <Image src={image} alt="Preview" fill className="object-cover" />
+                                    <div className="relative mt-4 aspect-video w-full rounded-sm overflow-hidden border-4 border-gray-100 shadow-inner group">
+                                        <img 
+                                            src={image} 
+                                            alt="Preview" 
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                (e.target as any).src = 'https://placehold.co/600x400?text=Invalid+Image+URL';
+                                            }}
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <p className="text-white font-black uppercase text-[10px] tracking-widest">Live Preview</p>
+                                        </div>
                                     </div>
                                 )}
                             </div>
