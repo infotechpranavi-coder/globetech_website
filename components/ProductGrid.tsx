@@ -41,6 +41,15 @@ export default function ProductGrid() {
     const router = useRouter();
     const [products, setProducts] = useState(STATIC_PRODUCTS);
 
+    const getYoutubeId = (url: string) => {
+        if (!url) return null;
+        const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+        const match = url.match(regExp);
+        return match ? match[1] : null;
+    };
+
+    const isYoutubeUrl = (url: string) => !!getYoutubeId(url);
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -95,13 +104,32 @@ export default function ProductGrid() {
                             className="group flex flex-col h-full bg-globe-black overflow-hidden rounded-sm cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100"
                         >
                             {/* Image Area */}
-                            <div className="relative aspect-[4/3] overflow-hidden">
-                                <Image
-                                    src={product.image}
-                                    alt={product.title}
-                                    fill
-                                    className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100"
-                                />
+                            <div className="relative aspect-[4/3] overflow-hidden bg-globe-black">
+                                {isYoutubeUrl(product.image || '') || (product.youtubeUrl && (!product.image || isYoutubeUrl(product.image))) ? (
+                                    <div className="relative w-full h-full">
+                                        <img 
+                                            src={`https://img.youtube.com/vi/${getYoutubeId(product.youtubeUrl || product.image)}/maxresdefault.jpg`} 
+                                            alt={product.title}
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${getYoutubeId(product.youtubeUrl || product.image)}/0.jpg`;
+                                            }}
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="bg-white/90 p-3 rounded-full shadow-lg group-hover:bg-globe-red group-hover:scale-110 transition-all duration-300">
+                                                <span className="text-globe-red text-2xl group-hover:text-white">▶</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <Image
+                                        src={product.image}
+                                        alt={product.title}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+                                    />
+                                )}
                             </div>
 
                             {/* Text Area */}

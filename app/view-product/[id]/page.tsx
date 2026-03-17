@@ -15,6 +15,8 @@ interface Product {
     price?: string;
     specifications?: Array<{ key: string; value: string }>;
     gallery?: string[];
+    youtubeUrl?: string;
+    isSqFt?: boolean;
 }
 
 const DUMMY_PRODUCTS: { [key: string]: Product } = {
@@ -46,6 +48,13 @@ const DUMMY_PRODUCTS: { [key: string]: Product } = {
             "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&q=80&w=1000"
         ]
     }
+};
+
+const getYoutubeId = (url: string) => {
+    if (!url) return null;
+    const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+    const match = url.match(regExp);
+    return match ? match[1] : null;
 };
 
 export default function ProductDetailsPage() {
@@ -81,7 +90,11 @@ export default function ProductDetailsPage() {
 
     useEffect(() => {
         if (product) {
-            setSelectedImage(product.image);
+            if (product.youtubeUrl) {
+                setSelectedImage('youtube');
+            } else {
+                setSelectedImage(product.image);
+            }
         }
     }, [product]);
 
@@ -155,16 +168,42 @@ export default function ProductDetailsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
                     {/* Image Area */}
                     <div className="lg:col-span-7">
-                        <div className="relative aspect-[4/3] rounded-sm overflow-hidden shadow-2xl border border-gray-100 mb-6 bg-gray-50">
-                            {selectedImage && (selectedImage.match(/\.(mp4|webm|ogg)$/i) || selectedImage.includes('video')) ? (
+                        <div className="relative aspect-video rounded-sm overflow-hidden shadow-[0_0_50px_rgba(238,42,36,0.15)] border-4 border-white/5 ring-1 ring-white/10 group mb-6 bg-globe-black">
+                            {selectedImage === 'youtube' && product.youtubeUrl ? (
+                                <div className="absolute inset-0 w-full h-full">
+                                    <iframe
+                                        className="absolute inset-0 w-full h-full"
+                                        src={`https://www.youtube.com/embed/${getYoutubeId(product.youtubeUrl)}?autoplay=1&mute=1&loop=1&playlist=${getYoutubeId(product.youtubeUrl)}`}
+                                        title="YouTube video player"
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowFullScreen
+                                    ></iframe>
+                                    <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-globe-red opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-globe-red opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                                </div>
+                            ) : selectedImage && (selectedImage.match(/\.(mp4|webm|ogg)$/i) || selectedImage.includes('video')) ? (
                                 <video
                                     src={selectedImage}
-                                    className="w-full h-full object-cover"
+                                    className="absolute inset-0 w-full h-full object-cover"
                                     controls
                                     autoPlay
                                     muted
                                     loop
                                 />
+                            ) : getYoutubeId(selectedImage || product.image) ? (
+                                <div className="absolute inset-0 w-full h-full">
+                                    <iframe
+                                        className="absolute inset-0 w-full h-full"
+                                        src={`https://www.youtube.com/embed/${getYoutubeId(selectedImage || product.image)}?autoplay=1&mute=1&loop=1&playlist=${getYoutubeId(selectedImage || product.image)}`}
+                                        title="YouTube video player"
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowFullScreen
+                                    ></iframe>
+                                    <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-globe-red opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-globe-red opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                                </div>
                             ) : (
                                 <Image
                                     src={selectedImage || product.image}
@@ -177,30 +216,59 @@ export default function ProductDetailsPage() {
                         </div>
 
                         {/* Gallery Thumbnails */}
-                        {product.gallery && product.gallery.length > 0 && (
+                        {(product.gallery && product.gallery.length > 0 || product.youtubeUrl) && (
                             <div className="grid grid-cols-4 md:grid-cols-5 gap-3 mb-10">
                                 <button
                                     onClick={() => setSelectedImage(product.image)}
                                     className={`relative aspect-square rounded-sm overflow-hidden border-2 transition-all ${selectedImage === product.image ? 'border-globe-red ring-2 ring-globe-red ring-opacity-50' : 'border-gray-200 hover:border-gray-300'}`}
                                 >
-                                    {product.image.match(/\.(mp4|webm|ogg)$/i) || product.image.includes('video') ? (
+                                    {getYoutubeId(product.image) ? (
+                                        <div className="relative w-full h-full">
+                                            <img src={`https://img.youtube.com/vi/${getYoutubeId(product.image)}/0.jpg`} alt="Main Thumbnail" className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 flex items-center justify-center bg-black/20"><span className="text-white text-xs">▶</span></div>
+                                        </div>
+                                    ) : product.image.match(/\.(mp4|webm|ogg)$/i) || product.image.includes('video') ? (
                                         <video src={product.image} className="w-full h-full object-cover" />
                                     ) : (
                                         <Image src={product.image} alt="Main" fill className="object-cover" />
                                     )}
                                 </button>
-                                {product.gallery.map((item, index) => (
+                                
+                                {product.youtubeUrl && (
+                                    <button
+                                        onClick={() => setSelectedImage('youtube')}
+                                        className={`relative aspect-square rounded-sm overflow-hidden border-2 transition-all group ${selectedImage === 'youtube' ? 'border-globe-red ring-2 ring-globe-red ring-opacity-50' : 'border-gray-200 hover:border-gray-300'}`}
+                                    >
+                                        <img 
+                                            src={`https://img.youtube.com/vi/${getYoutubeId(product.youtubeUrl)}/0.jpg`} 
+                                            alt="YouTube Video" 
+                                            className="w-full h-full object-cover opacity-60 group-hover:opacity-100" 
+                                        />
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="bg-white/90 p-2 rounded-full shadow-lg">
+                                                <span className="text-globe-red text-xl">▶</span>
+                                            </div>
+                                        </div>
+                                    </button>
+                                )}
+
+                                {product.gallery?.map((item, index) => (
                                     <button
                                         key={index}
                                         onClick={() => setSelectedImage(item)}
                                         className={`relative aspect-square rounded-sm overflow-hidden border-2 transition-all ${selectedImage === item ? 'border-globe-red ring-2 ring-globe-red ring-opacity-50' : 'border-gray-200 hover:border-gray-300'}`}
                                     >
-                                        {item.match(/\.(mp4|webm|ogg)$/i) || item.includes('video') ? (
+                                        {getYoutubeId(item) ? (
+                                            <div className="relative w-full h-full">
+                                                <img src={`https://img.youtube.com/vi/${getYoutubeId(item)}/0.jpg`} alt={`Gallery ${index}`} className="w-full h-full object-cover" />
+                                                <div className="absolute inset-0 flex items-center justify-center bg-black/20"><span className="text-white text-xs">▶</span></div>
+                                            </div>
+                                        ) : item.match(/\.(mp4|webm|ogg)$/i) || item.includes('video') ? (
                                             <video src={item} className="w-full h-full object-cover" />
                                         ) : (
-                                            <Image src={item} alt={`Gallery ${index}`} fill className="object-cover" />
+                                            <Image src={item} alt={`Gallery ${index}`} fill sizes="10vw" className="object-cover" />
                                         )}
-                                        {item.match(/\.(mp4|webm|ogg)$/i) || item.includes('video') ? (
+                                        {getYoutubeId(item) || item.match(/\.(mp4|webm|ogg)$/i) || item.includes('video') ? (
                                             <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                                                 <span className="text-white text-xl">▶</span>
                                             </div>
@@ -253,7 +321,7 @@ export default function ProductDetailsPage() {
                                 <span className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Approx Price</span>
                                 <div className="flex items-baseline gap-1">
                                     <span className="text-3xl font-black text-globe-red">{product.price}</span>
-                                    <span className="text-sm font-bold text-gray-500">/ sq ft</span>
+                                    {product.isSqFt !== false && <span className="text-sm font-bold text-gray-500">/ sq ft</span>}
                                 </div>
                             </div>
                         )}

@@ -35,6 +35,22 @@ const nextConfig = {
         protocol: 'https',
         hostname: '4.imimg.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'youtu.be',
+      },
+      {
+        protocol: 'https',
+        hostname: 'youtube.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.youtube.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+      },
     ],
 
   },

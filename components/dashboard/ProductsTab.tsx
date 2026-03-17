@@ -12,10 +12,41 @@ interface Product {
     price?: string;
     specifications?: Array<{ key: string; value: string }>;
     gallery?: string[];
+    youtubeUrl?: string;
     showInFooter?: boolean;
+    isSqFt?: boolean;
 }
 
 export default function ProductsTab() {
+    const getYoutubeId = (url: string) => {
+        if (!url) return null;
+        const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+        const match = url.match(regExp);
+        return match ? match[1] : null;
+    };
+
+    const isYoutubeUrl = (url: string) => !!getYoutubeId(url);
+
+    const renderMedia = (url: string, label = 'Media') => {
+        const ytId = getYoutubeId(url);
+        if (ytId) {
+            return (
+                <div className="relative w-full h-full">
+                    <img src={`https://img.youtube.com/vi/${ytId}/0.jpg`} alt={label} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                        <div className="bg-white/90 p-2 rounded-full shadow-lg">
+                            <span className="text-globe-red text-xl">▶</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        if (url.match(/\.(mp4|webm|ogg)$/i) || url.includes('blob:')) {
+            return <video src={url} className="w-full h-full object-cover" />;
+        }
+        return <Image src={url} alt={label} fill className="object-cover" />;
+    };
+
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
@@ -29,6 +60,8 @@ export default function ProductsTab() {
     const [price, setPrice] = useState('');
     const [specifications, setSpecifications] = useState<Array<{ key: string; value: string }>>([]);
     const [showInFooter, setShowInFooter] = useState(false);
+    const [isSqFt, setIsSqFt] = useState(true);
+    const [youtubeUrl, setYoutubeUrl] = useState('');
     const [submitting, setSubmitting] = useState(false);
 
     const [newSpecKey, setNewSpecKey] = useState('');
@@ -66,8 +99,9 @@ export default function ProductsTab() {
         setPrice('');
         setSpecifications([]);
         setGallery([]);
-        setGallery([]);
+        setYoutubeUrl('');
         setShowInFooter(false);
+        setIsSqFt(true);
         setEditingProduct(null);
         setIsAdding(false);
         setNewSpecKey('');
@@ -83,8 +117,9 @@ export default function ProductsTab() {
         setPrice(product.price || '');
         setSpecifications(product.specifications || []);
         setGallery(product.gallery || []);
-        setGallery(product.gallery || []);
+        setYoutubeUrl(product.youtubeUrl || '');
         setShowInFooter(product.showInFooter || false);
+        setIsSqFt(product.isSqFt !== undefined ? product.isSqFt : true);
         setIsAdding(true);
     };
 
@@ -93,7 +128,7 @@ export default function ProductsTab() {
         setSubmitting(true);
 
         try {
-            const payload = { title, description, image, link, price, specifications, gallery, showInFooter };
+            const payload = { title, description, image, link, price, specifications, gallery, youtubeUrl, showInFooter, isSqFt };
             const url = editingProduct ? `/api/products/${editingProduct._id}` : '/api/products';
             const method = editingProduct ? 'PUT' : 'POST';
 
@@ -264,14 +299,26 @@ export default function ProductsTab() {
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Approx Price / sq ft</label>
-                                        <input
-                                            type="text"
-                                            value={price}
-                                            onChange={(e) => setPrice(e.target.value)}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-sm outline-none focus:ring-2 focus:ring-globe-red transition bg-white text-gray-900"
-                                            placeholder="e.g., ₹500"
-                                        />
+                                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Price / Unit</label>
+                                        <div className="flex gap-2 items-center">
+                                            <input
+                                                type="text"
+                                                value={price}
+                                                onChange={(e) => setPrice(e.target.value)}
+                                                className="flex-grow px-4 py-3 border border-gray-300 rounded-sm outline-none focus:ring-2 focus:ring-globe-red transition bg-white text-gray-900"
+                                                placeholder="e.g., ₹500"
+                                            />
+                                            <div className="flex items-center gap-2 px-3 py-3 bg-gray-50 border border-gray-300 rounded-sm">
+                                                <input
+                                                    type="checkbox"
+                                                    id="sqFtToggle"
+                                                    checked={isSqFt}
+                                                    onChange={(e) => setIsSqFt(e.target.checked)}
+                                                    className="w-4 h-4 accent-globe-red"
+                                                />
+                                                <label htmlFor="sqFtToggle" className="text-[10px] font-black uppercase text-gray-500 cursor-pointer whitespace-nowrap">/ sq ft</label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="space-y-2">
@@ -369,11 +416,9 @@ export default function ProductsTab() {
                                         >
                                             {image ? (
                                                 <>
-                                                    {image.match(/\.(mp4|webm|ogg)$/i) || image.includes('video') ? (
-                                                        <video src={image} className="w-full h-full object-cover" controls={false} autoPlay muted loop />
-                                                    ) : (
-                                                        <Image src={image} alt="Preview" fill className="object-cover" />
-                                                    )}
+                                                    <div className="relative w-full h-full">
+                                                        {renderMedia(image, 'Preview')}
+                                                    </div>
                                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                                         <span className="text-white text-[10px] font-black uppercase tracking-widest">Change Media</span>
                                                     </div>
@@ -395,6 +440,33 @@ export default function ProductsTab() {
                                     className="hidden"
                                 />
                                 <p className="text-[10px] text-gray-400 italic">Professional industrial shots/videos only. Max file size: 50MB.</p>
+
+                                <div className="space-y-2 pt-4 border-t border-gray-100">
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-globe-red">Option 3: YouTube Video URL</label>
+                                    <div className="flex gap-2">
+                                        <div className="flex-1">
+                                            <input
+                                                type="text"
+                                                value={youtubeUrl}
+                                                onChange={(e) => setYoutubeUrl(e.target.value)}
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-sm outline-none focus:ring-2 focus:ring-globe-red transition bg-white text-gray-900 text-sm"
+                                                placeholder="https://www.youtube.com/watch?v=..."
+                                            />
+                                        </div>
+                                    </div>
+                                    {youtubeUrl && getYoutubeId(youtubeUrl) && (
+                                        <div className="relative aspect-video rounded-sm overflow-hidden mt-4 border-2 border-gray-100">
+                                            <iframe
+                                                className="absolute inset-0 w-full h-full"
+                                                src={`https://www.youtube.com/embed/${getYoutubeId(youtubeUrl)}`}
+                                                title="YouTube preview"
+                                                frameBorder="0"
+                                                allowFullScreen
+                                            ></iframe>
+                                        </div>
+                                    )}
+                                    <p className="text-[8px] text-gray-400 uppercase font-black">Link will be used to show YouTube Player on details page</p>
+                                </div>
                             </div>
 
                             {/* Gallery Section */}
@@ -450,11 +522,7 @@ export default function ProductsTab() {
                                         <div className="grid grid-cols-3 gap-2 mt-4">
                                             {gallery.map((url, index) => (
                                                 <div key={index} className="relative aspect-square border border-gray-200 rounded-sm overflow-hidden group">
-                                                    {url.match(/\.(mp4|webm|ogg)$/i) || url.includes('video') ? (
-                                                        <video src={url} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <Image src={url} alt={`Gallery ${index}`} fill className="object-cover" />
-                                                    )}
+                                                    {renderMedia(url, `Gallery ${index}`)}
                                                     <button
                                                         type="button"
                                                         onClick={() => removeGalleryItem(index)}
@@ -494,8 +562,8 @@ export default function ProductsTab() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {products.map((product) => (
                     <div key={product._id} className="bg-white rounded-sm border border-gray-200 overflow-hidden shadow-sm group flex flex-col h-full">
-                        <div className="relative aspect-video bg-globe-black">
-                            <Image src={product.image} alt={product.title} fill className="object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
+                        <div className="relative aspect-video bg-globe-black overflow-hidden">
+                            {renderMedia(product.image || product.youtubeUrl || '', product.title)}
                         </div>
                         <div className="p-6 flex-grow">
                             <h4 className="font-black text-globe-black uppercase italic text-xl mb-3">{product.title}</h4>
