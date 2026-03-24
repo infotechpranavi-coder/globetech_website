@@ -1,196 +1,175 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ProjectCard from '@/components/ProjectCard';
 import PremiumHero from '@/components/PremiumHero';
 
-// Wrap the main content in Suspense for useSearchParams
-function PropertiesContent() {
+function ProductsContent() {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const initialSearch = searchParams.get('search') || '';
 
-    const [properties, setProperties] = useState<any[]>([]);
-    const [filteredProperties, setFilteredProperties] = useState<any[]>([]);
+    const [products, setProducts] = useState<any[]>([]);
+    const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState(initialSearch);
-    const [activeFilter, setActiveFilter] = useState('all');
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+    const getYoutubeId = (url: string) => {
+        if (!url) return null;
+        const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+        const match = url.match(regExp);
+        return match ? match[1] : null;
+    };
+
+    const isYoutubeUrl = (url: string) => !!getYoutubeId(url);
 
     useEffect(() => {
-        fetchProperties();
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('/api/products');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.length > 0) {
+                        setProducts(data);
+                        setFilteredProducts(data);
+                        setLoading(false);
+                        return;
+                    }
+                }
+
+                // Fallback for UI Preview
+                const dummyData = [
+                    {
+                        _id: 'd1',
+                        title: 'High Speed Doors',
+                        category: 'Industrial',
+                        image: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=800&auto=format&fit=crop',
+                        description: 'Durable high-speed doors designed for efficiency, safety, and smooth operation in demanding industrial environments.'
+                    },
+                    {
+                        _id: 'd2',
+                        title: 'Boom Barriers',
+                        category: 'Security',
+                        image: 'https://images.unsplash.com/photo-1590674899484-d3066d482563?q=80&w=800&auto=format&fit=crop',
+                        description: 'Efficient boom barriers for secure access control, traffic management, and seamless vehicle flow.'
+                    },
+                    {
+                        _id: 'd3',
+                        title: 'Rolling Shutters',
+                        category: 'Industrial',
+                        image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=800&auto=format&fit=crop',
+                        description: 'Rolling shutters offering reliable protection, privacy control, and smooth operation for industrial and commercial spaces.'
+                    }
+                ];
+                setProducts(dummyData);
+                setFilteredProducts(dummyData);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProducts();
     }, []);
 
     useEffect(() => {
-        if (properties.length > 0) {
-            filterProperties(searchQuery, activeFilter);
-        }
-    }, [searchQuery, properties, activeFilter]);
+        if (products.length >= 0) {
+            let filtered = products;
 
-    const fetchProperties = async () => {
-        try {
-            setLoading(true);
-            const response = await fetch('/api/projects');
-            if (response.ok) {
-                const data = await response.json();
-                if (data && data.length > 0) {
-                    setProperties(data);
-                    setFilteredProperties(data);
-                    return;
-                }
+            if (searchQuery) {
+                const lowerQuery = searchQuery.toLowerCase();
+                filtered = filtered.filter((prod) => {
+                    return (
+                        prod.title?.toLowerCase().includes(lowerQuery) ||
+                        prod.description?.toLowerCase().includes(lowerQuery)
+                    );
+                });
             }
 
-            // Fallback for UI Preview
-            const dummyData = [
-                {
-                    _id: 'd1',
-                    name: 'Vertical High Speed Door',
-                    type: 'Industrial',
-                    subCategory: 'Industrial',
-                    price: 250000,
-                    image: 'https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=800&auto=format&fit=crop',
-                    description: 'High-performance vertical rolling door for cleanroom and warehouse environments.'
-                },
-                {
-                    _id: 'd2',
-                    name: 'Automatic Boom Barrier',
-                    type: 'Security',
-                    subCategory: 'Security',
-                    price: 85000,
-                    image: 'https://images.unsplash.com/photo-1590674899484-d3066d482563?q=80&w=800&auto=format&fit=crop',
-                    description: 'Heavy-duty 6m boom barrier with integrated brushless DC motor for high-frequency traffic.'
-                },
-                {
-                    _id: 'd3',
-                    name: 'Industrial Sectional Door',
-                    type: 'Industrial',
-                    subCategory: 'Industrial',
-                    price: 320000,
-                    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=800&auto=format&fit=crop',
-                    description: 'Insulated sectional doors for climate-controlled docking areas and workshops.'
-                },
-                {
-                    _id: 'd4',
-                    name: 'Automatic Sliding Gate',
-                    type: 'Entrance',
-                    subCategory: 'Entrance',
-                    price: 150000,
-                    image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=800&auto=format&fit=crop',
-                    description: 'Full-height perimeter security sliding gate with infrared safety sensors.'
-                },
-                {
-                    _id: 'd5',
-                    name: 'UHF Parking System',
-                    type: 'Parking',
-                    subCategory: 'Parking',
-                    price: 120000,
-                    image: 'https://images.unsplash.com/photo-1506521781263-d8422e82f27a?q=80&w=800&auto=format&fit=crop',
-                    description: 'Long-range RFID parking system for seamless vehicle entry and exit management.'
-                },
-                {
-                    _id: 'd6',
-                    name: 'Turnstile Access Control',
-                    type: 'Security',
-                    subCategory: 'Security',
-                    price: 95000,
-                    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop',
-                    description: 'Biometric tripod turnstile for high-security office lobbies and stadiums.'
-                }
-            ];
-            setProperties(dummyData);
-            setFilteredProperties(dummyData);
-        } catch (error) {
-            console.error('Error fetching properties:', error);
-        } finally {
-            setLoading(false);
+            setFilteredProducts(filtered);
         }
-    };
-
-    const filterProperties = (query: string, category: string) => {
-        let filtered = properties;
-
-        if (category !== 'all') {
-            filtered = filtered.filter(prop =>
-                prop.type?.toLowerCase().includes(category.toLowerCase()) ||
-                prop.subCategory?.toLowerCase().includes(category.toLowerCase())
-            );
-        }
-
-        if (query) {
-            const lowerQuery = query.toLowerCase();
-            filtered = filtered.filter((prop) => {
-                return (
-                    prop.name?.toLowerCase().includes(lowerQuery) ||
-                    prop.location?.toLowerCase().includes(lowerQuery) ||
-                    prop.description?.toLowerCase().includes(lowerQuery)
-                );
-            });
-        }
-
-        setFilteredProperties(filtered);
-    };
+    }, [searchQuery, products]);
 
     return (
         <main className="min-h-screen bg-[#FDFDFD]">
             <Header />
 
             <PremiumHero
-                titlePrefix="ADVANCED"
-                titleSuffix="SOLUTIONS"
+                titlePrefix="OUR"
+                titleSuffix="PRODUCTS"
                 description="Precision-engineered automated systems for high-performance industrial facilities."
-                backgroundImage="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1600"
+                backgroundImage="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1600&auto=format&fit=crop"
             />
 
             <div className="container mx-auto px-4 max-w-7xl -mt-16 relative z-20 pb-24">
-                {/* Glassmorphism Filter Bar */}
-                <div className="bg-white/70 backdrop-blur-xl p-2 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/40 mb-16 sticky top-24">
-                    <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
-                        {/* Quick Filter Tabs */}
-                        <div className="flex items-center gap-2 p-1 bg-gray-100/50 rounded-xl w-full lg:w-auto overflow-x-auto no-scrollbar">
-                            {['all', 'industrial', 'entrance', 'security', 'parking'].map((cat) => (
-                                <button
-                                    key={cat}
-                                    onClick={() => setActiveFilter(cat)}
-                                    className={`px-6 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeFilter === cat
-                                        ? 'bg-globe-red text-white shadow-lg shadow-globe-red/20'
-                                        : 'text-gray-500 hover:text-globe-black hover:bg-white'
-                                        }`}
-                                >
-                                    {cat}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Search Input */}
-                        <div className="relative w-full lg:max-w-md">
-                            <input
-                                type="text"
-                                placeholder="Search solutions..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-white/50 border border-gray-100 py-3 px-6 pr-12 rounded-xl focus:outline-none focus:ring-2 focus:ring-globe-red/20 focus:border-globe-red font-bold text-xs uppercase tracking-widest transition-all"
-                            />
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-globe-red">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 {/* Grid Content */}
                 {loading ? (
-                    <div className="flex flex-col items-center justify-center h-64 gap-4">
+                    <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
                         <div className="w-12 h-12 border-4 border-gray-100 border-t-globe-red rounded-full animate-spin"></div>
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Loading solutions...</span>
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Loading automation solutions...</span>
                     </div>
-                ) : filteredProperties.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-                        {filteredProperties.map((property, idx) => (
-                            <div key={property._id} className="animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
-                                <ProjectCard property={property} />
+                ) : filteredProducts.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {filteredProducts.map((product: any, index) => (
+                            <div
+                                key={index}
+                                onClick={() => router.push(`/view-product/${product._id}`)}
+                                className="group flex flex-col h-full bg-globe-black overflow-hidden rounded-sm cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 animate-fade-in-up"
+                                style={{ animationDelay: `${index * 100}ms` }}
+                            >
+                                {/* Image Area */}
+                                <div className="relative aspect-[4/3] overflow-hidden bg-globe-black">
+                                    {isYoutubeUrl(product.image || '') || (product.youtubeUrl && (!product.image || isYoutubeUrl(product.image))) ? (
+                                        <div className="relative w-full h-full">
+                                            <img 
+                                                src={`https://img.youtube.com/vi/${getYoutubeId(product.youtubeUrl || product.image)}/maxresdefault.jpg`} 
+                                                alt={product.title}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${getYoutubeId(product.youtubeUrl || product.image)}/0.jpg`;
+                                                }}
+                                            />
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <div className="bg-white/90 p-3 rounded-full shadow-lg group-hover:bg-globe-red group-hover:scale-110 transition-all duration-300">
+                                                    <span className="text-globe-red text-2xl group-hover:text-white">▶</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <Image
+                                            src={product.image || "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop"}
+                                            alt={product.title}
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-90 group-hover:opacity-100"
+                                        />
+                                    )}
+                                </div>
+
+                                {/* Text Area */}
+                                <div className="flex-grow p-8 flex flex-col items-center text-center transition-colors duration-300 group-hover:bg-globe-red">
+                                    <h3 className="text-xl font-bold text-globe-red mb-4 group-hover:text-white transition-colors uppercase tracking-tight">
+                                        {product.title}
+                                    </h3>
+                                    <p className="text-gray-400 text-sm leading-relaxed mb-6 group-hover:text-white/90 transition-colors">
+                                        {product.description?.split(' ').slice(0, 12).join(' ')}...
+                                    </p>
+
+                                    <button
+                                        className="flex items-center gap-2 text-globe-red font-black text-xs uppercase tracking-widest group-hover:text-white transition-colors"
+                                    >
+                                        View Details
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7-7 7M3 12h18" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -209,12 +188,12 @@ function PropertiesContent() {
                 )}
 
                 {/* Stats Footer */}
-                {!loading && filteredProperties.length > 0 && (
+                {!loading && filteredProducts.length > 0 && (
                     <div className="mt-20 pt-10 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
                         <div className="flex items-center gap-6">
                             <div className="flex flex-col">
-                                <span className="text-[40px] font-black text-globe-black leading-none">{filteredProperties.length}</span>
-                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Live Deployments</span>
+                                <span className="text-[40px] font-black text-globe-black leading-none">{filteredProducts.length}</span>
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Live Solutions</span>
                             </div>
                             <div className="w-px h-12 bg-gray-100 hidden md:block"></div>
                             <div className="flex flex-col">
@@ -227,6 +206,36 @@ function PropertiesContent() {
                         </button>
                     </div>
                 )}
+            </div>
+
+            {/* Floating Search Dock (Right Side) */}
+            <div className={`fixed right-10 top-1/2 -translate-y-1/2 z-[100] flex items-center gap-2 transition-all duration-500 ${isSearchOpen ? 'translate-x-0' : 'translate-x-[calc(100%-50px)] md:translate-x-[calc(100%-60px)]'}`}>
+                <div className={`flex items-center bg-black/90 backdrop-blur-xl rounded-full border border-white/10 shadow-2xl overflow-hidden transition-all duration-500 ${isSearchOpen ? 'w-[300px] md:w-[450px] opacity-100' : 'w-0 opacity-0'}`}>
+                    <input 
+                        type="text" 
+                        placeholder="SEARCH SOLUTIONS..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full bg-transparent border-none outline-none px-8 py-4 text-white font-black text-xs uppercase tracking-[0.2em] placeholder-white/30"
+                        autoFocus={isSearchOpen}
+                    />
+                    {searchQuery && (
+                        <button onClick={() => setSearchQuery('')} className="pr-4 text-white/40 hover:text-white transition-colors">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    )}
+                </div>
+                
+                <button 
+                    onClick={() => setIsSearchOpen(!isSearchOpen)}
+                    className={`h-[50px] w-[50px] md:h-[60px] md:w-[60px] rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl border ${isSearchOpen ? 'bg-globe-red border-globe-red scale-90' : 'bg-black border-white/10 active:scale-95 hover:bg-globe-red hover:border-globe-red'}`}
+                >
+                    {isSearchOpen ? (
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12" /></svg>
+                    ) : (
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    )}
+                </button>
             </div>
 
             <Footer />
@@ -258,10 +267,10 @@ function PropertiesContent() {
     );
 }
 
-export default function PropertiesPage() {
+export default function ProductsPage() {
     return (
         <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center">Loading...</div>}>
-            <PropertiesContent />
+            <ProductsContent />
         </Suspense>
     );
 }

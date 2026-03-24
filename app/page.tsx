@@ -11,6 +11,7 @@ import ProductGrid from "@/components/ProductGrid";
 import TeamSection from "@/components/TeamSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import FloatingActions from "@/components/FloatingActions";
+import WhyChooseUs from "@/components/WhyChooseUs";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -39,6 +40,8 @@ export default function Home() {
       </div>
 
       <PartnerSection />
+
+      <WhyChooseUs />
 
       <GlobeTechDifference />
 
