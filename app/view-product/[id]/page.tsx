@@ -460,7 +460,7 @@ export default function ProductDetailsPage() {
                         </div>
                         
                         <h2 className="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter italic mb-20">
-                            SYSTEM <span className="text-transparent border-t-2 border-b-2 border-white/20 px-4">IN ACTION</span>
+                            SYSTEM <span className="text-globe-red border-t-2 border-b-2 border-globe-red/30 px-4">IN ACTION</span>
                         </h2>
 
                         {/* Video Player Frame */}
