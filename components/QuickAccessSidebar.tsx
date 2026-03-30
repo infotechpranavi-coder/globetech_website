@@ -2,9 +2,24 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function QuickAccessSidebar() {
     const [isVisible, setIsVisible] = useState(false);
+    const pathname = usePathname();
+
+    // Generate dynamic WhatsApp message based on current page
+    const getWhatsAppUrl = () => {
+        let message = "I would like to enquire about your automation solutions.";
+        
+        // If on a product page (non-static page), use the slug to customize
+        if (pathname && pathname !== '/' && !['/about', '/contact', '/clients', '/media', '/products'].includes(pathname)) {
+            const productTitle = pathname.replace('/', '').split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            message = `I would like to enquire about ${productTitle}.`;
+        }
+        
+        return `https://wa.me/919323151641?text=${encodeURIComponent(message)}`;
+    };
 
     useEffect(() => {
         const toggleVisibility = () => {
@@ -77,7 +92,7 @@ export default function QuickAccessSidebar() {
 
             {/* WhatsApp Support */}
             <a 
-                href="https://wa.me/919323151641?text=I%20would%20like%20to%20enquire%20about%20your%20automation%20solutions." 
+                href={getWhatsAppUrl()} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="p-4 hover:bg-globe-red transition-all group border-b border-white/5"

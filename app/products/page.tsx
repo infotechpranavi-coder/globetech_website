@@ -116,10 +116,13 @@ function ProductsContent() {
                     </div>
                 ) : filteredProducts.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {filteredProducts.map((product: any, index) => (
+                        {filteredProducts.map((product: any, index: number) => (
                             <div
                                 key={index}
-                                onClick={() => router.push(`/view-product/${product._id}`)}
+                                onClick={() => {
+                                    const target = product.slug || product._id;
+                                    router.push(`/${target}`);
+                                }}
                                 className="group flex flex-col h-full bg-globe-black overflow-hidden rounded-sm cursor-pointer shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-100 animate-fade-in-up"
                                 style={{ animationDelay: `${index * 100}ms` }}
                             >

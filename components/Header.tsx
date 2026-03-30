@@ -155,7 +155,7 @@ export default function Header() {
             <NavLink href="/" pathname={pathname}>Home</NavLink>
             <NavLink href="/about" pathname={pathname}>About</NavLink>
             <NavLink href="/clients" pathname={pathname}>Clients</NavLink>
-            <NavLink href="/properties" pathname={pathname}>Products</NavLink>
+            <NavLink href="/products" pathname={pathname}>Products</NavLink>
             <NavLink href="/media" pathname={pathname}>News & Blogs</NavLink>
             <NavLink href="/contact" pathname={pathname}>Contact Us</NavLink>
           </div>
@@ -181,7 +181,7 @@ export default function Header() {
             <Link href="/" className="block py-3 text-sm font-bold uppercase text-globe-red">Home</Link>
             <Link href="/about" className="block py-3 text-sm font-bold uppercase text-gray-700 hover:text-globe-red border-t border-gray-50">About</Link>
             <Link href="/clients" className="block py-3 text-sm font-bold uppercase text-gray-700 hover:text-globe-red border-t border-gray-50">Clients</Link>
-            <Link href="/properties" className="block py-3 text-sm font-bold uppercase text-gray-700 hover:text-globe-red border-t border-gray-50">Products</Link>
+            <Link href="/products" className="block py-3 text-sm font-bold uppercase text-gray-700 hover:text-globe-red border-t border-gray-50">Products</Link>
             <Link href="/media" className="block py-3 text-sm font-bold uppercase text-gray-700 hover:text-globe-red border-t border-gray-50">News & Blogs</Link>
             <Link href="/contact" className="block py-3 text-sm font-bold uppercase text-gray-700 hover:text-globe-red border-t border-gray-50 uppercase">Contact Us</Link>
           </div>

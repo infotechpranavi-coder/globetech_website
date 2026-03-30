@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDatabase } from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
+import { generateSlug } from '@/lib/utils';
 
 // GET - Fetch all products
 export async function GET(request: NextRequest) {
@@ -33,8 +33,16 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        let slug = generateSlug(title);
+        // Basic uniqueness check for slug
+        const existing = await db.collection('products').findOne({ slug });
+        if (existing) {
+            slug = `${slug}-${Date.now().toString().slice(-4)}`;
+        }
+
         const product = {
             title,
+            slug,
             description,
             image,
             link: link || '#',

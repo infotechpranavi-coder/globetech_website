@@ -89,7 +89,7 @@ export default function LocationsPage() {
 
                                         {/* Explore Solution Button */}
                                         <Link
-                                            href={`/properties?location=${location.name.toLowerCase()}`}
+                                            href={`/products?location=${location.name.toLowerCase()}`}
                                             className="w-12 h-12 rounded-sm bg-globe-red flex items-center justify-center text-white hover:bg-globe-black transition shadow-lg"
                                         >
                                             <svg

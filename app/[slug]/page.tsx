@@ -147,10 +147,10 @@ export default function ProductDetailsPage() {
 
     useEffect(() => {
         fetchGlobalSettings();
-        if (params.id) {
+        if (params.slug) {
             fetchProduct();
         }
-    }, [params.id]);
+    }, [params.slug]);
 
     const fetchGlobalSettings = async () => {
         try {
@@ -191,18 +191,18 @@ export default function ProductDetailsPage() {
     }, [allImages.length, currentSlide]);
 
     const fetchProduct = async () => {
-        const id = params.id as string;
+        const slug = params.slug as string;
 
         // Check for dummy data first
-        if (DUMMY_PRODUCTS[id]) {
-            setProduct(DUMMY_PRODUCTS[id]);
+        if (DUMMY_PRODUCTS[slug]) {
+            setProduct(DUMMY_PRODUCTS[slug]);
             setLoading(false);
             return;
         }
 
         try {
             setLoading(true);
-            const response = await fetch(`/api/products/${id}`);
+            const response = await fetch(`/api/products/${slug}`);
             if (!response.ok) throw new Error('Product not found');
             const data = await response.json();
             setProduct(data);

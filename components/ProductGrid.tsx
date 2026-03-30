@@ -95,8 +95,10 @@ export default function ProductGrid() {
                         <div
                             key={index}
                             onClick={() => {
-                                if (product._id) {
-                                    router.push(`/view-product/${product._id}`);
+                                if (product.slug) {
+                                    router.push(`/${product.slug}`);
+                                } else if (product._id) {
+                                    router.push(`/${product._id}`);
                                 } else if (product.link && product.link !== '#') {
                                     router.push(product.link);
                                 }

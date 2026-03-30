@@ -35,7 +35,11 @@ export default function Footer() {
 
                     const filteredProducts = products
                         .filter((p: any) => p.showInFooter)
-                        .map((p: any) => ({ _id: p._id, title: p.title, link: p.link || '/properties' }));
+                        .map((p: any) => ({ 
+                            _id: p._id, 
+                            title: p.title, 
+                            link: p.slug ? `/${p.slug}` : (p.link || '/products') 
+                        }));
 
                     const filteredIndustries = industries
                         .filter((i: any) => i.showInFooter)
@@ -143,7 +147,7 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
+                                <Link href="/products" className="text-gray-300 hover:text-globe-red transition flex items-center group">
                                     <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
                                     Solutions
                                 </Link>
@@ -196,19 +200,19 @@ export default function Footer() {
                             ) : (
                                 <>
                                     <li>
-                                        <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
+                                        <Link href="/products" className="text-gray-300 hover:text-globe-red transition flex items-center group">
                                             <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
                                             Entrance Automation
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
+                                        <Link href="/products" className="text-gray-300 hover:text-globe-red transition flex items-center group">
                                             <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
                                             Loading Bay Solutions
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link href="/properties" className="text-gray-300 hover:text-globe-red transition flex items-center group">
+                                        <Link href="/products" className="text-gray-300 hover:text-globe-red transition flex items-center group">
                                             <span className="w-0 group-hover:w-2 h-0.5 bg-globe-red mr-0 group-hover:mr-2 transition-all"></span>
                                             Security Systems
                                         </Link>

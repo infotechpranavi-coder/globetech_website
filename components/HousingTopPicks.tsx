@@ -107,7 +107,7 @@ export default function IndustrialTopPicks() {
                   <h3 className="font-black text-globe-black text-xl leading-tight uppercase tracking-tight mb-2">
                     {projects[(currentIndex - 1 + projects.length) % projects.length].projectName}
                   </h3>
-                  <Link href="/properties" className="text-globe-red text-[10px] font-black uppercase tracking-widest hover:underline">
+                  <Link href="/products" className="text-globe-red text-[10px] font-black uppercase tracking-widest hover:underline">
                     Technical Specs
                   </Link>
                 </div>
@@ -191,7 +191,7 @@ export default function IndustrialTopPicks() {
                   <h3 className="font-black text-globe-black text-xl leading-tight uppercase tracking-tight mb-2">
                     {projects[(currentIndex + 1) % projects.length].projectName}
                   </h3>
-                  <Link href="/properties" className="text-globe-red text-[10px] font-black uppercase tracking-widest hover:underline">
+                  <Link href="/products" className="text-globe-red text-[10px] font-black uppercase tracking-widest hover:underline">
                     Technical Specs
                   </Link>
                 </div>
