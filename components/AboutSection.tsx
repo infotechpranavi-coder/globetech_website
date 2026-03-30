@@ -18,10 +18,9 @@ export default function AboutSection() {
             </div>
 
             {/* Overlay Box */}
-            <div className="absolute -top-10 -left-6 sm:-left-12 bg-globe-black border-l-4 sm:border-l-8 border-globe-red p-4 sm:p-8 shadow-2xl z-10 animate-fade-in pointer-events-none max-w-[200px] sm:max-w-none">
+            <div className="absolute -top-10 -left-12 sm:-left-24 bg-globe-black border-l-4 sm:border-l-8 border-globe-red p-4 sm:p-6 shadow-2xl z-10 animate-fade-in pointer-events-none max-w-[180px] sm:max-w-[280px]">
               <div className="text-white">
-                <h3 className="text-xl sm:text-3xl font-black leading-tight uppercase tracking-tighter">Globe-Tech<br />Automation</h3>
-                <p className="text-[10px] sm:text-xs font-black mt-2 sm:mt-3 opacity-80 uppercase tracking-widest text-globe-red">Since 2008</p>
+                <h3 className="text-lg sm:text-2xl font-black leading-tight uppercase tracking-tighter">Globetech<br />Innovations</h3>
               </div>
             </div>
           </div>
@@ -34,21 +33,18 @@ export default function AboutSection() {
             </div>
 
             <h2 className="text-4xl md:text-5xl font-black text-globe-black mb-8 uppercase tracking-tighter">
-              Globe-Tech Automation<br />Systems Pvt Ltd.
+              WELCOME TO GLOBETECH<br />INNOVATIONS
             </h2>
 
             <div className="space-y-6 text-gray-500 text-sm sm:text-base leading-relaxed font-medium uppercase tracking-wide">
               <p>
-                Welcome to Globe-Tech Automation. We're proud to be acknowledged among India's top brands in Industrial Automation because of our product quality and reliable services.
+                Globetech Innovations is a leading brand in industrial and smart automation solutions, delivering sophisticated, energy-efficient, user-friendly, and reliable products. Our wide range includes sliding and swing gate motors, boom barriers, automated safety grills, automated roof systems, glass doors, and many more innovative solutions designed to enhance convenience and security.
               </p>
               <p>
-                For over 15 years, we are empowering our clients with our innovative automation solutions. We help them enhance the efficiency of their workforce and increase the productivity of their factories and manufacturing units. Our solutions also help them optimize costs and minimize injuries at workplace.
+                We specialize in providing customized automation solutions tailored to client requirements and budgets, ensuring maximum performance, reliability, and value.
               </p>
               <p className="text-xs opacity-70">
                 A glowing testimony to our capabilities and reputation is the list of our esteemed clients, which include <strong>Maruti Suzuki, Adani Group, JSW Group, Amazon, Hero Motors, Asian Paints, Panasonic, Honda, Uflex, Merino, Daiichi, Shimizu, ITC, Nestle, Halidram's, Patanjali, Mccain, Anmol Industries, Dabur, Mother Dairy, Aurobindo, Glenmark, Mankind, Bharat Biotech, Intas Pharma, ACG, Zydus, Lupin, Abbott, Cipla, NTPC, Airport Authority of India</strong>, and many other <strong>PSUs</strong> and <strong>CPSEs</strong> among others.
-              </p>
-              <p>
-                Please feel free to explore our platform to know more about our industrial capabilities. We'd be happy to discuss your upcoming technical requirements and look forward to collaborating with you.
               </p>
             </div>
 

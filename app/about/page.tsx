@@ -33,22 +33,16 @@ export default function AboutPage() {
                 <div className="w-1 h-8 bg-globe-red"></div>
                 <span className="text-gray-400 font-bold tracking-widest text-[10px] uppercase">Industrial Heritage</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-black text-globe-black mb-8 leading-tight uppercase tracking-tight">15 Years of Excellence in Industrial Automation</h2>
+              <h2 className="text-4xl md:text-5xl font-black text-globe-black mb-8 leading-tight uppercase tracking-tight">Excellence in Industrial Automation</h2>
             </div>
 
             <div className="mb-16">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <p className="text-lg text-gray-500 leading-relaxed font-bold uppercase tracking-wide">
-                  Globetech Innovations has been a leading name in the industrial automation industry, dedicated to helping
-                  factories and warehouses optimize their operations with future-ready solutions.
-                  With over 15 years of experience and a commitment to excellence, we have built a reputation
-                  for integrity, professionalism, and outstanding technical support.
+                  Globetech Innovations empowers businesses and individuals with advanced automation technologies that improve efficiency, safety, and productivity. Our solutions are designed to simplify modern living while maintaining high durability and cost-effectiveness.
                 </p>
                 <p className="text-lg text-gray-400 leading-relaxed font-bold uppercase tracking-wide">
-                  Our mission is to provide exceptional automation services
-                  that exceed expectations. We understand that enhancing workforce efficiency and factory productivity is one of
-                  your most significant business goals, and we're here to guide you through every step
-                  of the automation process.
+                  Headquartered in Mumbai, India, we have a strong presence across major cities through our trusted channel partners. With continuous innovation and a dedicated team, we deliver world-class products that meet industry standards and exceed expectations.
                 </p>
               </div>
             </div>
@@ -56,15 +50,15 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
               <div className="text-center p-8 bg-white rounded-sm shadow-xl border-t-4 border-globe-red hover:shadow-2xl transition-all">
                 <div className="text-5xl font-black text-globe-black mb-3 italic">2.5K+</div>
-                <div className="text-gray-400 font-black text-[10px] uppercase tracking-widest">Active Solutions</div>
+                <div className="text-gray-400 font-black text-[10px] uppercase tracking-widest">Successful Deployments</div>
               </div>
               <div className="text-center p-8 bg-white rounded-sm shadow-xl border-t-4 border-globe-black hover:shadow-2xl transition-all">
                 <div className="text-5xl font-black text-globe-red mb-3 italic">15+</div>
                 <div className="text-gray-400 font-black text-[10px] uppercase tracking-widest">Global Support Hubs</div>
               </div>
               <div className="text-center p-8 bg-white rounded-sm shadow-xl border-t-4 border-globe-red hover:shadow-2xl transition-all">
-                <div className="text-5xl font-black text-globe-black mb-3 italic">15+</div>
-                <div className="text-gray-400 font-black text-[10px] uppercase tracking-widest">Years Industry Experience</div>
+                <div className="text-5xl font-black text-globe-black mb-3 italic">PREMIUM</div>
+                <div className="text-gray-400 font-black text-[10px] uppercase tracking-widest">Industrial Expertise</div>
               </div>
             </div>
 

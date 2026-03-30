@@ -11,6 +11,7 @@ import DashboardLogin from '@/components/dashboard/DashboardLogin';
 import IndustriesTab from '@/components/dashboard/IndustriesTab';
 import ProductsTab from '@/components/dashboard/ProductsTab';
 import SettingsTab from '@/components/dashboard/SettingsTab';
+import SocialLinksTab from '@/components/dashboard/SocialLinksTab';
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('analytics');
@@ -43,6 +44,8 @@ export default function DashboardPage() {
         return <OrdersTab />;
       case 'settings':
         return <SettingsTab />;
+      case 'social':
+        return <SocialLinksTab />;
       default:
         return <AnalyticsTab />;
     }

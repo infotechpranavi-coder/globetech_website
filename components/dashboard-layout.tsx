@@ -19,6 +19,7 @@ const tabs = [
   { id: 'testimonials', label: 'Testimonials', icon: '💬' },
   { id: 'orders', label: 'Enquiries', icon: '📋' },
   { id: 'settings', label: 'Site Settings', icon: '🛠️' },
+  { id: 'social', label: 'Social Links', icon: '🌐' },
 ];
 
 

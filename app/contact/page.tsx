@@ -166,9 +166,9 @@ export default function ContactPage() {
                     <div>
                       <h3 className="text-xl font-black text-globe-black mb-2 uppercase tracking-tight">Office Address</h3>
                       <p className="text-gray-500 leading-relaxed">
-                        GANDHI NAGAR, ROOM NO 49, NEAR MS BLDG 32, DR C G ROAD,<br />
-                        NEAR RCF GATE NO.3, CHEMBUR COLONY, Chembur Extension,<br />
-                        Mumbai - 400074, Maharashtra, India
+                        CST no 344, plot no 419, Sion - Trombay Rd,<br />
+                        next to victory container yard, opp. Vijay sales,<br />
+                        Suman Nagar, Chembur, Mumbai, Maharashtra 400071
                       </p>
                     </div>
                   </div>
@@ -181,7 +181,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="text-xl font-black text-globe-black mb-2 uppercase tracking-tight">Call Now</h3>
                       <p className="text-gray-500 leading-relaxed">
-                        08047641503<br />
+                        9323151641 / 8655588899 / 8655588848<br />
                         Mon-Sat: 10AM - 6PM
                       </p>
                     </div>
@@ -195,7 +195,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="text-xl font-black text-globe-black mb-2 uppercase tracking-tight">Email Support</h3>
                       <p className="text-gray-500 leading-relaxed">
-                        info@toshiautomation.com
+                        support@globetechinnovations.com
                       </p>
                     </div>
                   </div>
