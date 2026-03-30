@@ -51,8 +51,6 @@ export default function Home() {
 
       <TestimonialsSection />
 
-      <FloatingActions />
-      <QuickAccessSidebar />
 
       <div id="footer">
         <Footer />

@@ -3,7 +3,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TeamSection from "@/components/TeamSection";
-import FloatingActions from "@/components/FloatingActions";
 import Image from "next/image";
 
 export default function TeamPage() {
@@ -102,7 +101,6 @@ export default function TeamPage() {
             </section>
 
             <Footer />
-            <FloatingActions />
         </main>
     );
 }

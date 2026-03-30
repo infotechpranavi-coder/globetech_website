@@ -170,7 +170,6 @@ export default function AboutPage() {
       </section>
 
       <Footer />
-      <FloatingActions />
     </main>
   );
 }

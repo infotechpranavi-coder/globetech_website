@@ -105,7 +105,6 @@ export default function ClientsPage() {
             <TestimonialsSection />
 
             <Footer />
-            <FloatingActions />
         </main>
     );
 }

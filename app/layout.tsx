@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import Preloader from "@/components/Preloader";
+import GlobalActionWrapper from "@/components/GlobalActionWrapper";
 
 export const metadata: Metadata = {
   title: "Globe-Tech Automation - Engineering Excellence | Industrial Solutions",
@@ -21,8 +22,8 @@ export default function RootLayout({
       <body>
         <Preloader />
         {children}
+        <GlobalActionWrapper />
       </body>
     </html>
   );
 }
-
