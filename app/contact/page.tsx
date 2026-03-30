@@ -104,7 +104,7 @@ export default function ContactPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-globe-red"
-                    placeholder="08047641503"
+                    placeholder="9323151641"
                   />
                 </div>
                 <div>
@@ -165,11 +165,16 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="text-xl font-black text-globe-black mb-2 uppercase tracking-tight">Office Address</h3>
-                      <p className="text-gray-500 leading-relaxed">
+                      <a 
+                        href="https://maps.app.goo.gl/jHHZeweWktWefyRM6" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-gray-500 leading-relaxed hover:text-globe-red transition-colors"
+                      >
                         CST no 344, plot no 419, Sion - Trombay Rd,<br />
                         next to victory container yard, opp. Vijay sales,<br />
                         Suman Nagar, Chembur, Mumbai, Maharashtra 400071
-                      </p>
+                      </a>
                     </div>
                   </div>
                   <div className="flex items-start space-x-6">

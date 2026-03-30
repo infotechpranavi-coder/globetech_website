@@ -1,17 +1,51 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
+interface TeamMember {
+  _id: string;
+  name: string;
+  designation: string;
+  image: string;
+  showOnAbout: boolean;
+}
+
 export default function AboutSection() {
+  const [featuredMember, setFeaturedMember] = useState<TeamMember | null>(null);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const res = await fetch('/api/team');
+        if (res.ok) {
+          const data = await res.json();
+          const featured = data.find((m: TeamMember) => m.showOnAbout);
+          if (featured) {
+            setFeaturedMember(featured);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching featured member:', err);
+      }
+    };
+    fetchFeatured();
+  }, []);
+
+  const displayName = featuredMember?.name || "Kapil Sachdev";
+  const displayImage = featuredMember?.image || "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop";
+
   return (
     <section className="py-16 sm:py-24 bg-white overflow-hidden">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
 
-          {/* Left Side: Founder Image with Overlay */}
+          {/* Left Side: Featured Leader Image with Overlay */}
           <div className="relative w-full lg:w-1/2 group">
             <div className="relative aspect-[4/5] sm:aspect-[3/2] lg:aspect-square overflow-hidden rounded-sm shadow-2xl">
               <Image
-                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1974&auto=format&fit=crop"
-                alt="Kapil Sachdev - Founder & CEO"
+                src={displayImage}
+                alt={`${displayName} - Founder & CEO`}
                 fill
                 className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
               />

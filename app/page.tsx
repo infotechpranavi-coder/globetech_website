@@ -12,6 +12,7 @@ import TeamSection from "@/components/TeamSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import FloatingActions from "@/components/FloatingActions";
 import WhyChooseUs from "@/components/WhyChooseUs";
+import QuickAccessSidebar from "@/components/QuickAccessSidebar";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -51,6 +52,7 @@ export default function Home() {
       <TestimonialsSection />
 
       <FloatingActions />
+      <QuickAccessSidebar />
 
       <div id="footer">
         <Footer />

@@ -15,6 +15,7 @@ const tabs = [
   { id: 'hero', label: 'Hero Slides', icon: '🎞️' },
   { id: 'industries', label: 'Industries', icon: '🏭' },
   { id: 'products', label: 'Products', icon: '⚙️' },
+  { id: 'team', label: 'Team', icon: '👥' },
   { id: 'partners', label: 'Partners', icon: '🤝' },
   { id: 'testimonials', label: 'Testimonials', icon: '💬' },
   { id: 'orders', label: 'Enquiries', icon: '📋' },

@@ -252,11 +252,16 @@ export default function Footer() {
                                 </div>
                                 <div>
                                     <span className="text-[10px] text-gray-500 block uppercase tracking-widest mb-1 font-black">Global HQ</span>
-                                    <span className="font-black text-xs block leading-snug uppercase tracking-wide">
+                                    <a 
+                                        href="https://maps.app.goo.gl/jHHZeweWktWefyRM6" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="font-black text-xs block leading-snug uppercase tracking-wide hover:text-globe-red transition-colors"
+                                    >
                                         CST no 344, plot no 419, Sion - Trombay Rd,<br />
                                         next to victory container yard, opp. Vijay sales,<br />
                                         Suman Nagar, Chembur, Mumbai, Maharashtra 400071
-                                    </span>
+                                    </a>
                                 </div>
                             </li>
                         </ul>

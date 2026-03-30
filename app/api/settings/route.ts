@@ -15,7 +15,8 @@ export async function GET(request: NextRequest) {
             instagram: '',
             linkedin: '',
             twitter: '',
-            youtube: ''
+            youtube: '',
+            showTeamSection: true
         }, { status: 200 });
     } catch (error: any) {
         console.error('Error fetching settings:', error);
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
         const db = await getDatabase();
         const body = await request.json();
 
-        const { videoUrl, brochureUrl, facebook, instagram, linkedin, twitter, youtube } = body;
+        const { videoUrl, brochureUrl, facebook, instagram, linkedin, twitter, youtube, showTeamSection } = body;
 
         const result = await db.collection('site_settings').updateOne(
             { key: 'general' },
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
                     linkedin: linkedin || '',
                     twitter: twitter || '',
                     youtube: youtube || '',
+                    showTeamSection: showTeamSection !== undefined ? !!showTeamSection : true,
                     updatedAt: new Date()
                 },
                 $setOnInsert: { createdAt: new Date() }

@@ -12,6 +12,7 @@ import IndustriesTab from '@/components/dashboard/IndustriesTab';
 import ProductsTab from '@/components/dashboard/ProductsTab';
 import SettingsTab from '@/components/dashboard/SettingsTab';
 import SocialLinksTab from '@/components/dashboard/SocialLinksTab';
+import TeamManager from '@/components/dashboard/TeamManager';
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('analytics');
@@ -36,6 +37,8 @@ export default function DashboardPage() {
         return <IndustriesTab />;
       case 'products':
         return <ProductsTab />;
+      case 'team':
+        return <TeamManager />;
       case 'partners':
         return <DevelopersTab />;
       case 'testimonials':
