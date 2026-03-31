@@ -73,7 +73,7 @@ export default function Header() {
         <div className="container mx-auto px-4 max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-2">
           {/* Tagline */}
           <div className="text-[10px] sm:text-xs md:text-sm font-bold text-gray-800 uppercase tracking-tight">
-            Globetech Innovations — <span className="text-globe-red">MOST RELIABLE</span> Industrial Automation Partner
+            Total solution for all your engineering needs
           </div>
 
           {/* Contact & Socials */}
@@ -141,8 +141,8 @@ export default function Header() {
                 </h1>
                 <div className="flex items-center gap-2">
                   <span className="hidden lg:block w-px h-3 bg-gray-300"></span>
-                  <p className="text-[9px] sm:text-[10px] md:text-xs font-bold text-gray-500 uppercase">
-                    Chembur, Mumbai, Maharashtra 400071
+                  <p className="text-[9px] sm:text-[10px] md:text-xs font-bold text-globe-red uppercase tracking-widest">
+                    Engineering • Automation • Technology
                   </p>
                 </div>
               </div>
