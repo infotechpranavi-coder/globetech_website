@@ -84,7 +84,7 @@ export default function Header() {
                   <path d="M20 15.5c-1.2 0-2.4-.2-3.6-.6-.3-.1-.7 0-1 .2l-2.2 2.2c-2.8-1.4-5.1-3.8-6.6-6.6l2.2-2.2c.3-.3.4-.7.2-1-.3-1.1-.5-2.3-.5-3.5 0-.6-.4-1-1-1H4c-.6 0-1 .4-1 1 0 9.4 7.6 17 17 17 .6 0 1-.4 1-1v-3.5c0-.6-.4-1-1-1z" />
                 </svg>
               </span>
-              <span>9323151641</span>
+              <span>9323151641 / 8655588899 / 8655588848</span>
             </div>
             <div className="flex items-center px-2 sm:px-4 gap-3 sm:gap-4">
               <Link href={socialLinks.facebook} target="_blank" className="text-gray-400 hover:text-[#1877F2] transition-colors" title="Facebook">
@@ -123,7 +123,7 @@ export default function Header() {
           {/* Logo & Branding */}
           <Link href="/" className="flex items-center gap-4 group">
             {/* Circular Logo */}
-            <div className="relative h-20 w-20 sm:h-24 sm:w-24 flex-shrink-0 -mt-4 sm:-mt-8">
+            <div className="relative h-14 w-14 sm:h-24 sm:w-24 flex-shrink-0 -mt-2 sm:-mt-8">
               <Image
                 src="/WhatsApp_Image_2026-01-30_at_11.21.42_PM-removebg-preview.png"
                 alt="Globetech Innovations"

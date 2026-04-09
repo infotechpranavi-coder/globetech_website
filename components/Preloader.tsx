@@ -73,7 +73,7 @@ export default function Preloader() {
             </div>
 
             {/* Corporate Slogan (Hidden on Mobile) */}
-            <div className="absolute bottom-12 text-white/20 font-black uppercase tracking-[0.5em] text-[10px] hidden md:block animate-fade-in [animation-delay:500ms]">
+            <div className="absolute bottom-12 text-white font-black uppercase tracking-[0.5em] text-lg hidden md:block animate-fade-in [animation-delay:500ms]">
                 Engineering • Automation • Technology
             </div>
         </div>

@@ -63,11 +63,13 @@ export default function TestimonialsSection() {
     };
 
     const STATIC_LOGOS = [
-        { name: "Anmol", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/anmol-logo.png" },
-        { name: "Aurobindo", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/aurobindo-logo.png" },
-        { name: "DJK", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/djk-logo.png" },
-        { name: "Glenmark", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/glenmark-logo.png" },
-        { name: "ITC", src: "https://www.toshiautomation.com/wp-content/uploads/2020/01/itc-logo.png" },
+        { name: "Maruti Suzuki", logo: <div className="text-blue-900 font-black text-xs md:text-sm italic uppercase tracking-tighter">Maruti Suzuki</div> },
+        { name: "Adani", logo: <div className="text-blue-600 font-black text-sm md:text-base uppercase tracking-tighter">ADANI</div> },
+        { name: "ITC", logo: <div className="text-globe-black font-black text-lg md:text-xl uppercase tracking-tighter">ITC</div> },
+        { name: "Hero Motors", logo: <div className="text-red-600 font-black text-sm md:text-base uppercase tracking-tighter">HERO</div> },
+        { name: "Amazon", logo: <div className="text-black font-black text-sm md:text-base tracking-tighter">amazon</div> },
+        { name: "JSW", logo: <div className="text-blue-800 font-black text-lg md:text-xl uppercase tracking-tighter">JSW</div> },
+        { name: "Nestle", logo: <div className="text-gray-800 font-black text-sm md:text-base tracking-tighter">Nestle</div> },
     ];
 
     const displayLogos = partnerLogos.length > 0 ? partnerLogos : STATIC_LOGOS;
@@ -162,7 +164,9 @@ export default function TestimonialsSection() {
                     <div className="flex flex-wrap justify-between items-center gap-8 opacity-60 hover:opacity-100 transition-opacity">
                         {displayLogos.map((logo: any, index: number) => (
                             <div key={index} className="grayscale hover:grayscale-0 transition-all duration-300 h-12 flex items-center">
-                                {logo.logo || logo.src ? (
+                                {typeof logo.logo === 'object' ? (
+                                    logo.logo
+                                ) : (logo.logo || logo.src) ? (
                                     <img
                                         src={logo.logo || logo.src}
                                         alt={logo.name}
