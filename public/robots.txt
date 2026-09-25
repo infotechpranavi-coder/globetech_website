@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Block common non-SEO/private areas if they exist
+Disallow: /admin/
+Disallow: /login/
+Disallow: /dashboard/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /thank-you/
+
+# Allow Google and other search engines to crawl assets
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.webp$
+Allow: /*.svg$
+
+# Sitemap
+Sitemap: https://www.globetechinnovations.com/sitemap.xml
