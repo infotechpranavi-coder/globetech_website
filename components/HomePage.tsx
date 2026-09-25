@@ -1,0 +1,55 @@
+'use client';
+
+import { useEffect } from 'react';
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
+import VideoSection from "@/components/VideoSection";
+import TopSellingProjects from "@/components/TopSellingProjects";
+import PartnerSection from "@/components/PartnerSection";
+import GlobeTechDifference from "@/components/GlobeTechDifference";
+import ProductGrid from "@/components/ProductGrid";
+import TeamSection from "@/components/TeamSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import WhyChooseUs from "@/components/WhyChooseUs";
+import Footer from "@/components/Footer";
+
+export default function HomePage() {
+  useEffect(() => {
+    document.documentElement.style.scrollBehavior = 'smooth';
+    return () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+    };
+  }, []);
+
+  return (
+    <main className="min-h-screen bg-white">
+      <Header />
+
+      <div id="hero">
+        <Hero />
+      </div>
+
+      <ProductGrid />
+
+      <VideoSection />
+
+      <div id="latest-projects">
+        <TopSellingProjects />
+      </div>
+
+      <PartnerSection />
+
+      <WhyChooseUs />
+
+      <GlobeTechDifference />
+
+      <TeamSection />
+
+      <TestimonialsSection />
+
+      <div id="footer">
+        <Footer />
+      </div>
+    </main>
+  );
+}
