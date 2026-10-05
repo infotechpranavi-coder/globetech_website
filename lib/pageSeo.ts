@@ -3,27 +3,27 @@ import type { Metadata } from "next";
 type PageSeo = Pick<Metadata, "title" | "description" | "keywords">;
 
 export const homeSeo: PageSeo = {
-  title: "GlobeTech Innovations | Automation and Industrial Solutions",
+  title: "GlobeTech Innovations | Gate fabrication and automation supplier in Mumbai",
   description:
-    "GlobeTech Innovations provides advanced automation and industrial solutions, delivering reliable technology, engineering, and customized solutions to improve efficiency and productivity.",
+    "GlobeTech Innovations is a trusted gate fabrication and automation supplier in Mumbai, offering automatic gates, industrial gates, custom gate fabrication, and advanced gate automation solutions.",
   keywords:
-    "GlobeTech Innovations, GlobeTech Automation, industrial solutions, industrial automation, automation solutions, industrial automation systems, industrial technology solutions, factory automation, engineering solutions, industrial control systems, process automation, customized industrial solutions, automation technology, industrial equipment solutions.",
+    "gate fabrication in Mumbai, gate automation supplier in Mumbai, automatic gate manufacturer in Mumbai, automatic gate supplier Mumbai, industrial gate manufacturer Mumbai, automatic sliding gates Mumbai, automatic swing gates Mumbai, custom gate fabrication Mumbai, stainless steel gate fabrication Mumbai, industrial gate automation, automatic security gates Mumbai, GlobeTech Innovations.",
 };
 
 export const aboutSeo: PageSeo = {
-  title: "Automation technology Mumbai | Industrial technology solutions",
+  title: "Fabrication services in Mumbai |Customised automation service",
   description:
-    "Discover advanced automation technology and industrial technology solutions in Mumbai. Get reliable, customized automation systems designed to improve efficiency, productivity, and industrial performance.",
+    "GlobeTech Innovations offers fabrication services in Mumbai, including customized fabrication, industrial automation, and tailored engineering solutions for diverse industrial needs.",
   keywords:
-    "Automation technology Mumbai, industrial technology solutions Mumbai, industrial automation Mumbai, automation solutions Mumbai, industrial automation systems, industrial technology company Mumbai, factory automation Mumbai, industrial control systems Mumbai, process automation Mumbai, automation engineering Mumbai, industrial solutions Mumbai, customized automation solutions, industrial automation technology, automation systems Mumbai, industrial engineering solutions Mumbai.",
+    "fabrication services in Mumbai, customized automation services in Mumbai, custom fabrication Mumbai, industrial fabrication services Mumbai, industrial automation solutions Mumbai, metal fabrication Mumbai, customized engineering solutions, industrial automation supplier Mumbai, custom gate fabrication Mumbai, automation system integration Mumbai, GlobeTech Innovations.",
 };
 
 export const clientsSeo: PageSeo = {
-  title: "Our Clients | GlobeTech Innovations | Industrial Automation",
+  title: "Automatic Gate & Remote-Control Gate Supplier in Mumbai",
   description:
-    "Explore GlobeTech Innovations' valued clients and industry partnerships. We deliver reliable industrial automation, engineering, and technology solutions for leading businesses across global markets.",
+    "GlobeTech Innovations is a supplier of automatic gates, remote-control gates, and automatic sliding gates in Mumbai, offering customized gate automation solutions for residential, commercial, and industrial properties.",
   keywords:
-    "GlobeTech Innovations clients, GlobeTech Automation clients, industrial automation clients, industrial automation company, industrial solutions, automation solutions, engineering solutions, industrial technology solutions, automation technology company, industrial automation Mumbai, automation company Mumbai, enterprise automation solutions, industrial engineering solutions, Fortune 500 automation solutions, automobile automation solutions, pharmaceutical automation solutions, factory automation solutions, customized automation solutions.",
+    "automatic gate supplier in Mumbai, remote control gate supplier in Mumbai, automatic sliding gate supplier in Mumbai, automatic gate manufacturer Mumbai, remote operated gates Mumbai, automatic sliding gate systems, motorized gate supplier Mumbai, automatic security gates Mumbai, residential automatic gates Mumbai, commercial automatic gates Mumbai, industrial sliding gates Mumbai, gate automation solutions Mumbai, GlobeTech Innovations.",
 };
 
 export const mediaSeo: PageSeo = {
@@ -44,59 +44,59 @@ export const contactSeo: PageSeo = {
 
 export const productSeo: Record<string, PageSeo> = {
   "ss-automatic-sliding-gate": {
-    title: "SS Automatic Sliding Gate | Stainless Steel Gate Mumbai",
+    title: "SS Automatic Sliding Gate Supplier in Mumbai | GlobeTech",
     description:
-      "SS Automatic Sliding Gate by GlobeTech Innovations, Mumbai, offers durable stainless-steel construction, smooth electric operation, modern design, and customized automation for residential and commercial applications.",
+      "GlobeTech Innovations offers SS automatic sliding gates in Mumbai, featuring durable stainless-steel construction, smooth operation, and reliable gate automation solutions for residential, commercial, and industrial properties.",
     keywords:
-      "SS automatic sliding gate, stainless steel automatic sliding gate, automatic sliding gate, automatic sliding gate Mumbai, SS sliding gate Mumbai, stainless steel sliding gate Mumbai, automatic gate manufacturer Mumbai, sliding gate manufacturer Mumbai, automatic gate solutions Mumbai, electric sliding gate, motorized sliding gate, automatic entrance gate, stainless steel gate, automated sliding gate, customized automatic gate, residential sliding gate, commercial sliding gate, industrial sliding gate, GlobeTech Innovations, GlobeTech Automation.",
+      "SS automatic sliding gate, stainless steel automatic sliding gate Mumbai, automatic sliding gate supplier in Mumbai, SS sliding gate manufacturer Mumbai, stainless steel gate supplier Mumbai, automatic stainless-steel gates, motorized sliding gate Mumbai, automatic gate automation Mumbai, stainless steel security gates, residential sliding gates Mumbai, commercial automatic gates Mumbai, GlobeTech Innovations.",
   },
   "automatic-bi-fold-gate": {
-    title: "Automatic Bi-Fold Gate | Bi-Fold Gate Automation Mumbai",
+    title: "Automatic Bi-Fold Gate Supplier in Mumbai | Designer Gates",
     description:
-      "GlobeTech Innovations offers automatic bi-fold gates with reliable electric automation, modern design and customized solutions for residential, commercial and industrial entrances in Mumbai.",
+      "GlobeTech Innovations offers automatic bi-fold gates, cast iron gates, designer gates, and building entrance gates in Mumbai, with customized designs for residential, commercial, and industrial properties.",
     keywords:
-      "automatic bi-fold gate, automatic bi fold gate, bi-fold gate automation, automatic folding gate, bi folding gate, automated bi-fold gate, electric bi-fold gate, motorized bi-fold gate, automatic gate Mumbai, bi-fold gate Mumbai, automatic gate manufacturer Mumbai, automatic gate solutions Mumbai, gate automation Mumbai, entrance automation Mumbai, industrial bi-fold gate, commercial automatic gate, residential automatic gate, customized automatic gate, GlobeTech Innovations, GlobeTech Automation.",
+      "automatic bi-fold gate supplier in Mumbai, bifold gate supplier Mumbai, automatic folding gates Mumbai, cast iron gate supplier Mumbai, designer gate supplier Mumbai, building gate supplier Mumbai, automatic bi-fold gates, custom designer gates Mumbai, residential entrance gates Mumbai, commercial building gates Mumbai, folding gate automation Mumbai, decorative iron gates Mumbai, GlobeTech Innovations.",
   },
   "automatic-security-gate": {
-    title: "Automatic Security Gate | Security Gate Automation Mumbai",
+    title: "Automatic Sliding Gate Supplier in Mumbai | Telescopic Gate Supplier",
     description:
-      "GlobeTech Innovations offers automatic security gates with reliable automation and smart security solutions for residential, commercial and industrial entrances in Mumbai.",
+      "GlobeTech Innovations is a trusted automatic sliding and telescopic gate supplier in Mumbai, offering customized, durable and reliable gate automation solutions for homes, offices and commercial properties.",
     keywords:
-      "automatic security gate, automatic security gates, security gate automation, automated security gate, electric security gate, motorized security gate, automatic gate Mumbai, security gate Mumbai, automatic security gate Mumbai, security gate automation Mumbai, automatic entrance gate, automated entrance gate, security entrance gate, gate automation Mumbai, industrial security gate, commercial security gate, residential security gate, smart security gate, customized security gate, GlobeTech Innovations, GlobeTech Automation.",
+      "automatic sliding gate supplier in Mumbai, automatic telescopic gate supplier in Mumbai, sliding gate supplier Mumbai, telescopic sliding gate Mumbai, automatic sliding gates Mumbai, automatic telescopic gates Mumbai, motorized sliding gate Mumbai, gate automation supplier Mumbai, automated gate systems Mumbai, customized automatic gates Mumbai, residential automatic gates Mumbai, commercial automatic gates Mumbai, GlobeTech Innovations.",
   },
   "bi-folding-gate": {
-    title: "Bi-Folding Gate | Automatic Bi-Folding Gate Mumbai",
+    title: "Bi-Folding Gate Supplier | Bending & Cantilever Gate Supplier in Mumbai",
     description:
-      "GlobeTech Innovations offers durable bi-folding gates with advanced automation, customized designs and reliable operation for residential, commercial and industrial entrances in Mumbai.",
+      "GlobeTech Innovations offers bi-folding, bending and cantilever gates in Mumbai with customized designs, durable construction and reliable gate automation solutions.",
     keywords:
-      "bi-folding gate, bi folding gate, automatic bi-folding gate, automatic bi-fold gate, bi-fold gate automation, bi-folding gate Mumbai, automatic bi-fold gate Mumbai, folding gate automation, automated folding gate, electric bi-folding gate, motorized bi-fold gate, industrial bi-folding gate, commercial bi-folding gate, residential bi-folding gate, customized bi-folding gate, gate automation Mumbai, automatic gate Mumbai, entrance automation Mumbai, GlobeTech Innovations, GlobeTech Automation.",
+      "bi-folding gate supplier in Mumbai, bi-folding gates Mumbai, bending gate supplier Mumbai, bending gates Mumbai, cantilever gate supplier in Mumbai, cantilever gates Mumbai, automatic bi-folding gate Mumbai, automatic cantilever gate Mumbai, custom gate supplier Mumbai, industrial gates Mumbai, residential gates Mumbai, commercial gate supplier Mumbai, gate automation solutions Mumbai, GlobeTech Innovations.",
   },
   "automatic-industrial-swing-gates": {
-    title: "Automatic Industrial Swing Gates | automatic swing gate Mumbai",
+    title: "Automatic Roofing System & Automation Ladder Supplier in Mumbai",
     description:
-      "GlobeTech Innovations offers automatic industrial swing gates for factories and industrial sites, featuring durable construction, smooth operation and advanced automation solutions.",
+      "GlobeTech Innovations offers automatic roofing systems and automation ladders in Mumbai, providing customized, durable and reliable solutions for residential, commercial and industrial applications.",
     keywords:
-      "automatic industrial swing gates, automatic industrial swing gate, industrial swing gates, automatic swing gate, industrial gate automation, automatic swing gate Mumbai, industrial swing gate Mumbai, automatic industrial gate Mumbai, factory swing gate, industrial automatic gate, motorized industrial gate, electric swing gate, automated industrial gate, factory gate automation, industrial gate solutions, automatic gate manufacturer Mumbai, industrial automation Mumbai, gate automation Mumbai, GlobeTech Innovations, GlobeTech Automation.",
+      "automatic roofing system supplier in Mumbai, automatic roofing system Mumbai, automated roofing solutions Mumbai, roof automation system supplier, motorized roofing system Mumbai, automation ladder supplier in Mumbai, automated ladder system Mumbai, automatic ladder supplier Mumbai, customized automation solutions Mumbai, industrial automation solutions Mumbai, residential automation systems Mumbai, commercial automation solutions Mumbai, GlobeTech Innovations.",
   },
   "automatic-swing-gate": {
-    title: "Automatic Swing Gate | Gate Automation Mumbai | GlobeTech",
+    title: "Automatic Swing Gate Supplier in Mumbai | Gate Automation",
     description:
-      "GlobeTech Innovations offers automatic swing gates with advanced gate automation, durable construction and customized designs for residential, commercial and industrial entrances in Mumbai.",
+      "GlobeTech Innovations is an automatic swing gate supplier in Mumbai, offering durable, customized and reliable swing gate automation solutions for residential, commercial and industrial properties.",
     keywords:
-      "automatic swing gate, automatic swing gates, automatic swing gate Mumbai, swing gate automation, automated swing gate, electric swing gate, motorized swing gate, automatic gate Mumbai, gate automation Mumbai, automatic entrance gate, residential swing gate, commercial swing gate, industrial swing gate, customized swing gate, metal automatic gate, smart swing gate, automatic gate manufacturer Mumbai, gate automation solutions Mumbai, GlobeTech Innovations, GlobeTech Automation.",
+      "automatic swing gate supplier in Mumbai, automatic swing gates Mumbai, swing gate automation Mumbai, motorized swing gate Mumbai, automatic gate supplier Mumbai, electric swing gate Mumbai, automated entrance gates Mumbai, residential swing gates Mumbai, commercial swing gates Mumbai, industrial swing gates Mumbai, customized automatic gates Mumbai, gate automation solutions Mumbai, GlobeTech Innovations.",
   },
   "automatic-bungalow-main-gate": {
-    title: "Automatic Bungalow Main Gate | Mumbai | GlobeTech Innovations",
+    title: "Automatic Bungalow Main Gate Supplier in Mumbai | GlobeTech",
     description:
-      "GlobeTech Innovations offers customized automatic bungalow main gates with smart automation, durable construction and remote-controlled operation for stylish and secure residential entrances in Mumbai.",
+      "GlobeTech Innovations offers automatic bungalow main gates in Mumbai with customized designs, durable construction and reliable gate automation solutions for modern residential properties.",
     keywords:
-      "automatic bungalow main gate, automatic main gate for bungalow, bungalow automatic gate, automatic bungalow gate, bungalow main gate, automatic gate Mumbai, bungalow gate Mumbai, automatic entrance gate Mumbai, residential automatic gate, automatic sliding gate for bungalow, motorized bungalow gate, electric bungalow gate, smart automatic gate, customized bungalow gate, automated main gate, residential gate automation, automatic main gate manufacturer Mumbai, gate automation Mumbai, GlobeTech Innovations, GlobeTech Automation.",
+      "automatic bungalow main gate supplier in Mumbai, automatic main gate Mumbai, bungalow gate supplier Mumbai, automatic bungalow gate Mumbai, residential automatic gate Mumbai, automatic entrance gate Mumbai, motorized main gate Mumbai, customized bungalow gates Mumbai, designer main gate Mumbai, automatic security gate Mumbai, residential gate automation Mumbai, main gate automation solutions Mumbai, GlobeTech Innovations.",
   },
   "stainless-steel-gate": {
-    title: "Stainless Steel Gate | SS Gate Manufacturer Mumbai | GlobeTech",
+    title: "Stainless Steel Gate Supplier in Mumbai | SS Gates | GlobeTech",
     description:
-      "GlobeTech Innovations offers durable stainless steel gates with modern designs and customized automation solutions for residential, commercial and industrial entrances in Mumbai.",
+      "GlobeTech Innovations is a stainless-steel gate supplier in Mumbai, offering customized SS gates, designer gates, security gates and durable entrance gates for residential and commercial properties.",
     keywords:
-      "stainless steel gate, stainless steel gates, SS gate, SS gates Mumbai, stainless steel gate Mumbai, stainless steel main gate, stainless steel entrance gate, stainless steel automatic gate, automatic SS gate, SS automatic gate, stainless steel sliding gate, stainless steel swing gate, residential stainless steel gate, commercial stainless steel gate, industrial stainless steel gate, customized stainless steel gate, stainless steel gate manufacturer Mumbai, automatic gate Mumbai, gate automation Mumbai, GlobeTech Innovations, GlobeTech Automation.",
+      "stainless steel gate supplier in Mumbai, SS gate supplier Mumbai, stainless steel gates Mumbai, SS gate manufacturer Mumbai, stainless steel main gate Mumbai, stainless steel entrance gate Mumbai, designer SS gates Mumbai, stainless steel security gates Mumbai, customized stainless steel gates Mumbai, residential SS gates Mumbai, commercial stainless steel gates Mumbai, stainless steel gate fabrication Mumbai, GlobeTech Innovations.",
   },
 };
